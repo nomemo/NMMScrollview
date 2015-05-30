@@ -10,7 +10,7 @@
 
 @interface TPAutolayoutScrollView ()
 
-@property (nonatomic, strong) NSMutableArray *autoLayoutSubViews;
+@property (nonatomic, strong) NSMutableArray *autoLayoutViews;
 @property (nonatomic, strong) NSMutableArray *paddings;
 @property (nonatomic, strong) NSMutableArray *horizonConstraintArray;
 @property (nonatomic, strong) NSMutableArray *verticalConstraintArray;
@@ -30,7 +30,48 @@
 
 
 -(void)removeSubViewAtIndex:(NSInteger)index {
-  //TODO: RemvoeSubView
+  if (index > self.autoLayoutViews.count || index < 0) {
+    return;
+  }
+}
+
+- (void)insertSubview:(UIView *)view withDistanceFromLastViews:(CGFloat)distance atIndex:(NSInteger)index {
+  
+  NSInteger insertIndex = 0;
+  UIView *subview;
+  CGFloat padding = distance;
+  
+  if (!view) {
+    return;
+  } else {
+    subview = view;
+  }
+  
+  if (index < 0) {
+    insertIndex = 0;
+  } else if(index > self.autoLayoutViews.count) {
+    insertIndex = self.autoLayoutViews.count;
+  } else {
+    insertIndex = index;
+  }
+  
+  
+  [subview setTranslatesAutoresizingMaskIntoConstraints:NO];
+  [self addSubview:subview];
+
+  
+  //  [self addSubViewVerticalMoveConstraint:subview withPadding:padding];
+  [self addSubViewHorizonalMoveConstraint:subview withPadding:padding withIndex:index];
+  
+  
+  [self.paddings insertObject:@(padding) atIndex:index];
+  [self.autoLayoutViews insertObject:subview atIndex:index];
+  
+  
+  [self needsUpdateConstraints];
+  [self setNeedsDisplay];
+
+  
 }
 
 - (instancetype)init {
@@ -63,7 +104,7 @@
   
   self.verticalContentLength = 0;
   self.horizonContentLength = 0;
-  self.autoLayoutSubViews = [NSMutableArray array];
+  self.autoLayoutViews = [NSMutableArray array];
   self.verticalConstraintArray = [NSMutableArray array];
   self.horizonConstraintArray = [NSMutableArray array];
 }
@@ -76,24 +117,24 @@
 
 - (void)insertSubView:(UIView *)subview withDistanceFromLastView:(CGFloat)padding{
   
-  if (subview == nil) {
-    return;
-  }
-
-  [subview setTranslatesAutoresizingMaskIntoConstraints:NO];
-  [self addSubview:subview];
-  if (self.vertical) {
-  } else {
-  }
-  [self addSubViewVerticalMoveConstraint:subview withPadding:padding];
-  [self addSubViewHorizonalMoveConstraint:subview withPadding:padding];
-
-  
-  [self.paddings addObject:@(padding)];
-  [self.autoLayoutSubViews addObject:subview];
-  
-  [self needsUpdateConstraints];
-  [self setNeedsDisplay];
+//  if (subview == nil) {
+//    return;
+//  }
+//
+//  [subview setTranslatesAutoresizingMaskIntoConstraints:NO];
+//  [self addSubview:subview];
+//  if (self.vertical) {
+//  } else {
+//  }
+//  [self addSubViewVerticalMoveConstraint:subview withPadding:padding];
+//  [self addSubViewHorizonalMoveConstraint:subview withPadding:padding];
+//
+//  
+//  [self.paddings addObject:@(padding)];
+//  [self.autoLayoutViews addObject:subview];
+//  
+//  [self needsUpdateConstraints];
+//  [self setNeedsDisplay];
   
   
 }
@@ -107,7 +148,7 @@
   self.alwaysBounceVertical = vertical;
   self.alwaysBounceHorizontal = !vertical;
   
-  if (self.autoLayoutSubViews.count) {
+  if (self.autoLayoutViews.count) {
     //FIXME: Make a symbolic breakpoint at UIViewAlertForUnsatisfiableConstraints to catch this in the debugger.
     [self reArrangeSubViews];
   }
@@ -115,7 +156,7 @@
 
 - (void)reArrangeSubViews {
   
-  int count = self.autoLayoutSubViews.count;
+  int count = self.autoLayoutViews.count;
   
   for (int i = 0; i< count; i++) {
     NSArray *verticalCons = self.verticalConstraintArray[i];
@@ -137,7 +178,7 @@
 }
 
 
-- (void)addSubViewHorizonalMoveConstraint:(UIView *)subview withPadding:(CGFloat)distance{
+- (void)addSubViewHorizonalMoveConstraint:(UIView *)subview withPadding:(CGFloat)distance withIndex:(NSInteger)index{
   
   //Top.
   NSLayoutConstraint *con1 = [NSLayoutConstraint constraintWithItem:subview
@@ -178,8 +219,32 @@
   
   
   NSLayoutConstraint *con5 = nil;
-  UIView *lastView = [self.autoLayoutSubViews lastObject];
-  if (lastView == nil) {
+//  UIView *lastView = [self.autoLayoutViews lastObject];
+  
+  
+  UIView *priorView = nil;
+  UIView *followView = nil;
+  if (index == 0) {
+    priorView = self;
+    followView = [self.autoLayoutViews firstObject];
+  
+  
+  } else if (index == self.autoLayoutViews.count) {
+    
+    priorView = [self.autoLayoutViews lastObject];
+    
+    
+    
+    
+  } else {
+  
+    priorView = self.autoLayoutViews[index -1];
+    followView = self.autoLayoutViews[index];
+  
+  }
+  
+  //Fisrt One
+  if (followView == nil) {
     
     con5 = [NSLayoutConstraint constraintWithItem:subview
                                         attribute:NSLayoutAttributeLeading
@@ -188,18 +253,24 @@
                                         attribute:NSLayoutAttributeLeading
                                        multiplier:1.0
                                          constant:distance];
-    
+  //Last One
   } else {
     
     con5 = [NSLayoutConstraint constraintWithItem:subview
                                         attribute:NSLayoutAttributeLeading
                                         relatedBy:NSLayoutRelationEqual
-                                           toItem:lastView
+                                           toItem:followView
                                         attribute:NSLayoutAttributeTrailing
                                        multiplier:1.0
                                          constant:distance];
-    
   }
+  
+  
+  
+  
+  
+  
+  
   
   BOOL activeForTest = !self.vertical;
   con1.active = activeForTest;
@@ -253,7 +324,7 @@
                                                               multiplier:1
                                                                 constant:0];
   
-  UIView *lastView = [self.autoLayoutSubViews lastObject];
+  UIView *lastView = [self.autoLayoutViews lastObject];
   
   
   NSLayoutConstraint *con5 = nil;

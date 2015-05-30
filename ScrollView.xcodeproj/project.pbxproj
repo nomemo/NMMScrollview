@@ -15,7 +15,6 @@
 		28CD0F4F1B12FB1E00365DCA /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28CD0F4D1B12FB1E00365DCA /* LaunchScreen.xib */; };
 		28CD0F5B1B12FB1E00365DCA /* ScrollViewTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 28CD0F5A1B12FB1E00365DCA /* ScrollViewTests.m */; };
 		28CD0F691B13024500365DCA /* TPAutolayoutScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 28CD0F681B13024500365DCA /* TPAutolayoutScrollView.m */; };
-		28E2C4061B141CCA00368A3C /* TPAutoLayoutUIView.m in Sources */ = {isa = PBXBuildFile; fileRef = 28E2C4051B141CCA00368A3C /* TPAutoLayoutUIView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,8 +43,6 @@
 		28CD0F5A1B12FB1E00365DCA /* ScrollViewTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ScrollViewTests.m; sourceTree = "<group>"; };
 		28CD0F671B13024500365DCA /* TPAutolayoutScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPAutolayoutScrollView.h; sourceTree = "<group>"; };
 		28CD0F681B13024500365DCA /* TPAutolayoutScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TPAutolayoutScrollView.m; sourceTree = "<group>"; };
-		28E2C4041B141CCA00368A3C /* TPAutoLayoutUIView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPAutoLayoutUIView.h; sourceTree = "<group>"; };
-		28E2C4051B141CCA00368A3C /* TPAutoLayoutUIView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TPAutoLayoutUIView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,8 +90,6 @@
 				28CD0F461B12FB1E00365DCA /* ViewController.m */,
 				28CD0F671B13024500365DCA /* TPAutolayoutScrollView.h */,
 				28CD0F681B13024500365DCA /* TPAutolayoutScrollView.m */,
-				28E2C4041B141CCA00368A3C /* TPAutoLayoutUIView.h */,
-				28E2C4051B141CCA00368A3C /* TPAutoLayoutUIView.m */,
 				28CD0F481B12FB1E00365DCA /* Main.storyboard */,
 				28CD0F4B1B12FB1E00365DCA /* Images.xcassets */,
 				28CD0F4D1B12FB1E00365DCA /* LaunchScreen.xib */,
@@ -229,7 +224,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				28E2C4061B141CCA00368A3C /* TPAutoLayoutUIView.m in Sources */,
 				28CD0F691B13024500365DCA /* TPAutolayoutScrollView.m in Sources */,
 				28CD0F471B12FB1E00365DCA /* ViewController.m in Sources */,
 				28CD0F441B12FB1E00365DCA /* AppDelegate.m in Sources */,

@@ -28,6 +28,10 @@
 - (void)testExample {
     // This is an example of a functional test case.
     XCTAssert(YES, @"Pass");
+  NSArray *array = [NSMutableArray array];
+  id obj = [array firstObject];
+  id obj2 = [array lastObject];
+  NSLog(@"obj %@, obj2%@", obj, obj2);
 }
 
 - (void)testPerformanceExample {

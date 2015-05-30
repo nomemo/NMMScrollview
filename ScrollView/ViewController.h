@@ -10,8 +10,11 @@
 
 @interface ViewController : UIViewController
 
-- (IBAction)test:(id)sender;
+- (IBAction)rotate:(id)sender;
 
+- (IBAction)randomInsert:(id)sender;
+
+- (IBAction)randomRemove:(id)sender;
 
 @end
 

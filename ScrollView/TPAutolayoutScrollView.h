@@ -16,8 +16,11 @@
 
 - (void)insertSubView:(UIView *)subview withDistanceFromLastView:(CGFloat)distance;
 
+- (void)insertSubview:(UIView *)view withDistanceFromLastViews:(CGFloat)distance atIndex:(NSInteger)index;
+
 - (void)removeSubViewAtIndex:(NSInteger)index;
 
 - (void)reArrangeSubViews;
+
 
 @end
