@@ -58,9 +58,32 @@
 //    temp.backgroundColor  = [UIColor blackColor];
 //    [self.scrollView2 insertSubView:temp withDistanceFromLastView:arc4random() % 10];
 //  }
-
+  self.scrollView.vertical = true;
 }
 
+- (IBAction)addHead:(id)sender {
+  NSString *labelStr = [NSString stringWithFormat:@"%d", (int)[self.scrollView.autoLayoutViews count]];
+  UILabel *label = [self createLabel:labelStr];
+  [self.scrollView insertSubview:label withDistanceFromLastViews:10 atIndex:0];
+}
+- (IBAction)addMid:(id)sender {
+  NSInteger count = [self.scrollView.autoLayoutViews count];
+  NSString *labelStr = [NSString stringWithFormat:@"%d", (int)count];
+  UILabel *label = [self createLabel:labelStr];
+  [self.scrollView insertSubview:label withDistanceFromLastViews:count atIndex:count/2];
+}
+- (IBAction)addTail:(id)sender {
+  NSInteger count = [self.scrollView.autoLayoutViews count];
+  NSString *labelStr = [NSString stringWithFormat:@"%d", (int)count];
+  UILabel *label = [self createLabel:labelStr];
+  [self.scrollView insertSubview:label withDistanceFromLastViews:count atIndex:count];
+}
+- (IBAction)resizeSubView:(id)sender {
+  NSInteger count = [self.scrollView.autoLayoutViews count];
+  [self.scrollView changeViewHeightTo:15 atIndex:count];
+//  [self.scrollView removeSubViewAtIndex:count/2];
+//  [self.scrollView removeSubViewAtIndex:count];
+}
 
 - (void)didReceiveMemoryWarning {
   [super didReceiveMemoryWarning];
@@ -72,14 +95,14 @@
 }
 
 - (IBAction)randomInsert:(id)sender {
-  NSString *labelStr = [NSString stringWithFormat:@"%d", [self.scrollView.subViews count]];
-  NSInteger index = arc4random() %  [self.scrollView.subViews count];
+  NSString *labelStr = [NSString stringWithFormat:@"%d", (int)[self.scrollView.autoLayoutViews count]];
+  NSInteger index = arc4random() %  ([self.scrollView.autoLayoutViews count] + 1);
   UILabel *label = [self createLabel:labelStr];
   [self.scrollView insertSubview:label withDistanceFromLastViews:index atIndex:index];
 }
 
 - (IBAction)randomRemove:(id)sender {
-  NSInteger index = arc4random() %  [self.scrollView.subViews count];
+  NSInteger index = arc4random() %  [self.scrollView.autoLayoutViews count];
   [self.scrollView removeSubViewAtIndex:index];
 }
 

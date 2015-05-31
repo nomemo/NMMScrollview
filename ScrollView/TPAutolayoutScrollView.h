@@ -10,17 +10,22 @@
 
 @interface TPAutolayoutScrollView : UIScrollView
 
-@property (nonatomic, strong, readonly) NSMutableArray *subViews;
+@property (nonatomic, strong, readonly) NSMutableArray *autoLayoutViews;
 
 @property (nonatomic, assign) BOOL vertical;
 
-- (void)insertSubView:(UIView *)subview withDistanceFromLastView:(CGFloat)distance;
-
 - (void)insertSubview:(UIView *)view withDistanceFromLastViews:(CGFloat)distance atIndex:(NSInteger)index;
+
+- (void)addSubview:(UIView *)view withDistanceFromLastViews:(CGFloat)distance;
+
 
 - (void)removeSubViewAtIndex:(NSInteger)index;
 
 - (void)reArrangeSubViews;
+
+- (void)changeViewHeightTo:(CGFloat)height atIndex:(NSInteger)index;
+
+- (void)changeDistance:(CGFloat)height toIndex:(NSInteger)index;
 
 
 @end
