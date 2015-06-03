@@ -1,5 +1,9 @@
 # NPScrollview
 
+
+![](http://ww2.sinaimg.cn/mw690/56becbc4gw1esrd2gmvtzg20e80eknpe.gif)
+
+
 * SubClass of UIScrollView
 * The subviews will automaticlly add with Vertical and Horizon NSConstraints to support autolayout.
 * The subviews will arrange as linked list, and support insert, delete , change orientation, change padding and size
