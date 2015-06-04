@@ -80,8 +80,8 @@
 }
 - (IBAction)resizeSubView:(id)sender {
   NSInteger count = [self.scrollView.autoLayoutViews count];
-  [self.scrollView changeViewHeightTo:15 atIndex:count];
-//  [self.scrollView removeSubViewAtIndex:count/2];
+//  [self.scrollView changeViewHeightTo:15 atIndex:count];
+  [self.scrollView removeSubViewAtIndex:count/2];
 //  [self.scrollView removeSubViewAtIndex:count];
 }
 

@@ -134,11 +134,11 @@
 }
 
 -(void)removeSubViewAtIndex:(NSInteger)index {
-  if (![self checkIndexInBounds:index]) {
-    return;
-  };
+  
   NSInteger opIndex = [self getRealIndex:index]-1;
   [self removeConstraintsAtIndex:opIndex];
+  UIView *removeView =   self.autoLayoutViews[opIndex];
+  [removeView removeFromSuperview];
   [self.autoLayoutViews removeObjectAtIndex:opIndex];
   [self needsUpdateConstraints];
   [self setNeedsDisplay];
@@ -187,13 +187,11 @@
     UIView *priorView = self.autoLayoutViews[index-1];
     UIView *followView = self.autoLayoutViews[index+1];
     
-    NSMutableArray *followCons1 = self.horizonConstraintArray[index+1];
-    NSMutableArray *followCons2 = self.verticalConstraintArray[index+1];
-    NSLayoutConstraint *oldHorizonalCon5 = followCons1[4];
-    NSLayoutConstraint *oldVerticalCon5 = followCons2[4];
-    NSLayoutConstraint *newHorizonalCon5 = nil;
-    NSLayoutConstraint *newVerticalCon5 = nil;
     
+    NSLayoutConstraint *newHorizonalCon5 = nil;
+
+    NSMutableArray *followCons1 = self.horizonConstraintArray[index+1];
+    NSLayoutConstraint *oldHorizonalCon5 = followCons1[4];
     newHorizonalCon5 = [NSLayoutConstraint constraintWithItem:priorView
                                                     attribute:NSLayoutAttributeTrailing
                                                     relatedBy:NSLayoutRelationEqual
@@ -201,6 +199,14 @@
                                                     attribute:NSLayoutAttributeLeading
                                                    multiplier:1
                                                      constant:oldHorizonalCon5.constant];
+    newHorizonalCon5.active = oldHorizonalCon5.active;
+    [followCons1 removeLastObject];
+    [followCons1 addObject:newHorizonalCon5];
+    NSLayoutConstraint *newVerticalCon5 = nil;
+
+    
+    NSMutableArray *followCons2 = self.verticalConstraintArray[index+1];
+    NSLayoutConstraint *oldVerticalCon5 = followCons2[4];
     newVerticalCon5 = [NSLayoutConstraint constraintWithItem:priorView
                                                    attribute:NSLayoutAttributeBottom
                                                    relatedBy:NSLayoutRelationEqual
@@ -208,23 +214,25 @@
                                                    attribute:NSLayoutAttributeTop
                                                   multiplier:1
                                                     constant:oldVerticalCon5.constant];
-    
     newVerticalCon5.active = oldVerticalCon5.active;
-    newHorizonalCon5.active = oldHorizonalCon5.active;
-    
-    [followCons1 removeLastObject];
     [followCons2 removeLastObject];
-    [followCons1 addObject:newHorizonalCon5];
     [followCons2 addObject:newVerticalCon5];
     [NSLayoutConstraint deactivateConstraints:@[oldHorizonalCon5, oldVerticalCon5]];
   }
   
   NSArray *verticalCons = self.verticalConstraintArray[index];
-  NSArray *horizonalCnos = self.horizonConstraintArray[index];
+  NSArray *horizonalCons = self.horizonConstraintArray[index];
+  CGFloat verticalLength = ((NSLayoutConstraint *)[verticalCons lastObject]).constant;
+  CGFloat horizonalLength = ((NSLayoutConstraint *)[horizonalCons lastObject]).constant;
   [NSLayoutConstraint deactivateConstraints:verticalCons];
-  [NSLayoutConstraint deactivateConstraints:horizonalCnos];
+  [NSLayoutConstraint deactivateConstraints:horizonalCons];
   [self.horizonConstraintArray removeObjectAtIndex:index];
   [self.verticalConstraintArray removeObjectAtIndex:index];
+  
+  
+  self.verticalContentLength = self.verticalContentLength - verticalLength;
+  self.horizonContentLength = self.horizonContentLength - horizonalLength;
+
 }
 
 - (void)addSubViewHorizonalMoveConstraint:(UIView *)subview withPadding:(CGFloat)distance atIndex:(NSInteger)index{
