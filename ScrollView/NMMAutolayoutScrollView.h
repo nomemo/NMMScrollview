@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface TPAutolayoutScrollView : UIScrollView
+@interface NMMAutolayoutScrollView : UIScrollView
 
 @property (nonatomic, strong, readonly) NSMutableArray *autoLayoutViews;
 
@@ -26,6 +26,5 @@
 - (void)changeViewHeightTo:(CGFloat)height atIndex:(NSInteger)index;
 
 - (void)changeDistance:(CGFloat)height toIndex:(NSInteger)index;
-
 
 @end
