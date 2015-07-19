@@ -45,7 +45,10 @@
 }
 
 - (void)layoutSubviews {
+
     [super layoutSubviews];
+    NSLog(@"%@", self);
+
     if (self.vertical) {
         self.contentSize = CGSizeMake(self.contentSize.width, verticalContentLength);
     } else {
@@ -54,6 +57,9 @@
 }
 
 - (void)configureScrollView {
+    
+    NSLog(@"%@", self);
+    
     self.backgroundColor = [UIColor clearColor];
     self.bounces = YES;
     self.showsVerticalScrollIndicator = NO;
@@ -91,6 +97,7 @@
 - (void) addZeroViewConstraint {
 
     CGFloat sizeForView = 100;
+    [_zeroView invalidateIntrinsicContentSize];
     
     NSLayoutConstraint *leadingToSuperView = [NSLayoutConstraint constraintWithItem:_zeroView
                                                                attribute:NSLayoutAttributeLeading
@@ -153,11 +160,16 @@
     
     [self.layoutConstraintCollections addObject:colletion];
     
-    if (self.vertical) {
-        [NSLayoutConstraint activateConstraints:[colletion verticalConstraintArray]];
-    } else {
-        [NSLayoutConstraint activateConstraints:[colletion horizonalConstraintArray]];
-    }
+//    if (self.vertical) {
+//        [NSLayoutConstraint activateConstraints:[colletion verticalConstraintArray]];
+//    } else {
+//        [NSLayoutConstraint activateConstraints:[colletion horizonalConstraintArray]];
+//    }
+    leadingToSuperView.active = true;
+    topToSuperView.active = true;
+    trailing.active = true;
+    height.active = true;
+    
     
 }
 
