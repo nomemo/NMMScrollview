@@ -19,55 +19,6 @@
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3kV-yU-HtP" customClass="NMMAutolayoutScrollView">
                                 <rect key="frame" x="16" y="28" width="568" height="513"/>
                             </scrollView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Wrg-1p-Owk">
-                                <rect key="frame" x="273" y="562" width="54" height="30"/>
-                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="30" id="p8Z-yz-VoW"/>
-                                    <constraint firstAttribute="width" constant="54" id="zYS-wF-YDw"/>
-                                </constraints>
-                                <state key="normal" title="AddMid">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="addMid:" destination="kNT-zG-32X" eventType="touchUpInside" id="gXF-6D-4vf"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CDN-cu-3oO">
-                                <rect key="frame" x="335" y="562" width="51" height="30"/>
-                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                <state key="normal" title="AddTail">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="addTail:" destination="kNT-zG-32X" eventType="touchUpInside" id="elZ-57-1bB"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oxa-In-aAF">
-                                <rect key="frame" x="200" y="562" width="65" height="30"/>
-                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                <state key="normal" title="AddHead">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="addHead:" destination="kNT-zG-32X" eventType="touchUpInside" id="f95-AL-bNL"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yAa-tB-KwB">
-                                <rect key="frame" x="16" y="562" width="70" height="30"/>
-                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="70" id="6rM-sn-83M"/>
-                                    <constraint firstAttribute="height" constant="30" id="BQZ-49-4PW"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                <state key="normal" title="DeleteMid">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="resizeSubView:" destination="kNT-zG-32X" eventType="touchUpInside" id="oAW-TI-Pvj"/>
-                                </connections>
-                            </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UpS-nV-b9G">
                                 <rect key="frame" x="538" y="562" width="46" height="30"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
@@ -82,23 +33,26 @@
                                     <action selector="rotate:" destination="kNT-zG-32X" eventType="touchUpInside" id="Vhh-Wb-wse"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="G6P-KW-R7P">
+                                <rect key="frame" x="16" y="562" width="61" height="30"/>
+                                <state key="normal" title="AddView">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="addSubView:" destination="kNT-zG-32X" eventType="touchUpInside" id="ZC3-CA-Jmw"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="3N1-AZ-QuH" firstAttribute="top" secondItem="3kV-yU-HtP" secondAttribute="bottom" constant="59" id="DaS-xt-42c"/>
-                            <constraint firstItem="3N1-AZ-QuH" firstAttribute="top" secondItem="yAa-tB-KwB" secondAttribute="bottom" constant="8" id="IZY-yd-8rf"/>
-                            <constraint firstAttribute="centerX" secondItem="Wrg-1p-Owk" secondAttribute="centerX" id="K9K-aq-VSz"/>
-                            <constraint firstItem="oxa-In-aAF" firstAttribute="bottom" secondItem="Wrg-1p-Owk" secondAttribute="bottom" id="Mqf-Nf-Z08"/>
                             <constraint firstItem="3kV-yU-HtP" firstAttribute="leading" secondItem="ixM-ns-Zc2" secondAttribute="leading" constant="16" id="bGZ-t0-IjW"/>
-                            <constraint firstItem="3N1-AZ-QuH" firstAttribute="top" secondItem="Wrg-1p-Owk" secondAttribute="bottom" constant="8" id="dNv-xF-LoL"/>
                             <constraint firstAttribute="trailing" secondItem="3kV-yU-HtP" secondAttribute="trailing" constant="16" id="dXz-I9-DLZ"/>
-                            <constraint firstItem="oxa-In-aAF" firstAttribute="bottom" secondItem="CDN-cu-3oO" secondAttribute="bottom" id="hcY-Bb-exy"/>
+                            <constraint firstItem="G6P-KW-R7P" firstAttribute="leading" secondItem="ixM-ns-Zc2" secondAttribute="leading" constant="16" id="dkT-aY-04c"/>
                             <constraint firstAttribute="trailing" secondItem="UpS-nV-b9G" secondAttribute="trailing" constant="16" id="jEG-gj-hpg"/>
-                            <constraint firstItem="Wrg-1p-Owk" firstAttribute="leading" secondItem="oxa-In-aAF" secondAttribute="trailing" constant="8" id="kAm-dC-Atc"/>
                             <constraint firstItem="3N1-AZ-QuH" firstAttribute="top" secondItem="UpS-nV-b9G" secondAttribute="bottom" constant="8" id="lhc-xa-MbN"/>
-                            <constraint firstItem="CDN-cu-3oO" firstAttribute="leading" secondItem="Wrg-1p-Owk" secondAttribute="trailing" constant="8" id="nDS-jC-uau"/>
                             <constraint firstItem="3kV-yU-HtP" firstAttribute="top" secondItem="Fs9-to-LY9" secondAttribute="bottom" constant="8" id="osq-Dd-LbF"/>
-                            <constraint firstItem="yAa-tB-KwB" firstAttribute="leading" secondItem="ixM-ns-Zc2" secondAttribute="leading" constant="16" id="yVl-5L-iNg"/>
+                            <constraint firstItem="3N1-AZ-QuH" firstAttribute="top" secondItem="G6P-KW-R7P" secondAttribute="bottom" constant="8" id="rkK-tf-gEA"/>
                         </constraints>
                     </view>
                     <connections>
@@ -107,7 +61,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UVA-5U-uyK" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="526" y="1076"/>
+            <point key="canvasLocation" x="89" y="985"/>
         </scene>
     </scenes>
 </document>

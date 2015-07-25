@@ -15,7 +15,6 @@
 		28CD0F4F1B12FB1E00365DCA /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28CD0F4D1B12FB1E00365DCA /* LaunchScreen.xib */; };
 		28CD0F5B1B12FB1E00365DCA /* ScrollViewTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 28CD0F5A1B12FB1E00365DCA /* ScrollViewTests.m */; };
 		28CD0F691B13024500365DCA /* NMMAutolayoutScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 28CD0F681B13024500365DCA /* NMMAutolayoutScrollView.m */; };
-		28EA050D1B5B77B300B7E4A1 /* NMMLayoutConstraintColletion.m in Sources */ = {isa = PBXBuildFile; fileRef = 28EA050C1B5B77B300B7E4A1 /* NMMLayoutConstraintColletion.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,8 +43,6 @@
 		28CD0F5A1B12FB1E00365DCA /* ScrollViewTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ScrollViewTests.m; sourceTree = "<group>"; };
 		28CD0F671B13024500365DCA /* NMMAutolayoutScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMMAutolayoutScrollView.h; sourceTree = "<group>"; };
 		28CD0F681B13024500365DCA /* NMMAutolayoutScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMMAutolayoutScrollView.m; sourceTree = "<group>"; };
-		28EA050B1B5B77B300B7E4A1 /* NMMLayoutConstraintColletion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMMLayoutConstraintColletion.h; sourceTree = "<group>"; };
-		28EA050C1B5B77B300B7E4A1 /* NMMLayoutConstraintColletion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMMLayoutConstraintColletion.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,8 +90,6 @@
 				28CD0F461B12FB1E00365DCA /* ViewController.m */,
 				28CD0F671B13024500365DCA /* NMMAutolayoutScrollView.h */,
 				28CD0F681B13024500365DCA /* NMMAutolayoutScrollView.m */,
-				28EA050B1B5B77B300B7E4A1 /* NMMLayoutConstraintColletion.h */,
-				28EA050C1B5B77B300B7E4A1 /* NMMLayoutConstraintColletion.m */,
 				28CD0F481B12FB1E00365DCA /* Main.storyboard */,
 				28CD0F4B1B12FB1E00365DCA /* Images.xcassets */,
 				28CD0F4D1B12FB1E00365DCA /* LaunchScreen.xib */,
@@ -233,7 +228,6 @@
 				28CD0F471B12FB1E00365DCA /* ViewController.m in Sources */,
 				28CD0F441B12FB1E00365DCA /* AppDelegate.m in Sources */,
 				28CD0F411B12FB1E00365DCA /* main.m in Sources */,
-				28EA050D1B5B77B300B7E4A1 /* NMMLayoutConstraintColletion.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -12,9 +12,7 @@
 
 - (IBAction)rotate:(id)sender;
 
-- (IBAction)randomInsert:(id)sender;
-
-- (IBAction)randomRemove:(id)sender;
+- (IBAction)addSubView:(id)sender;
 
 @end
 

@@ -8,23 +8,51 @@
 
 #import <UIKit/UIKit.h>
 
+typedef enum : NSUInteger {
+    SubviewAlignType_Center,
+    SubviewAlignType_Left,
+    SubviewAlignType_Right,
+    SubviewAlignType_Custom,
+} NMSubviewAlignType;
+
+typedef enum : NSUInteger {
+    SubViewSizeType_FULL,
+    SubViewSizeType_QUARTER,
+    SubViewSizeType_HALF,
+    SubViewSizeType_THREEQUARTER,
+    SubViewSizeType_SELF,
+} NMSubViewSizeType;
+
+
 @interface NMMAutolayoutScrollView : UIScrollView
 
-@property (nonatomic, strong, readonly) NSMutableArray *autoLayoutViews;
+@property (nonatomic, assign) NMSubviewAlignType alignType;
 
-@property (nonatomic, assign) BOOL vertical;
+@property (nonatomic, assign) NSInteger limit;
 
-- (void)insertSubview:(UIView *)view withDistanceFromLastViews:(CGFloat)distance atIndex:(NSInteger)index;
+@property (nonatomic, assign) BOOL portraitArrange;
 
-- (void)addSubview:(UIView *)view withDistanceFromLastViews:(CGFloat)distance;
+@property (nonatomic, assign) BOOL viewAnimation;
 
+@property (nonatomic, assign) CGFloat defautlPadding;
+
+
+#pragma mark - Action
+
+- (void)changeArrangeOrientation;
+
+- (void)insertSubView:(UIView *)newView
+              atIndex:(NSInteger)index
+            ailgnType:(NMSubviewAlignType)ailgnType
+             SizeType:(NMSubViewSizeType)sizeType
+         priorPadding:(CGFloat)distance;
 
 - (void)removeSubViewAtIndex:(NSInteger)index;
 
-- (void)reArrangeSubViews;
+#pragma mark - Change SubView
 
-- (void)changeViewHeightTo:(CGFloat)height atIndex:(NSInteger)index;
+- (void)changeSize:(CGSize)size atIndex:(NSInteger)index;
 
-- (void)changeDistance:(CGFloat)height toIndex:(NSInteger)index;
+- (void)changeDistance:(CGFloat)padding atIndex:(NSInteger)index;
 
 @end

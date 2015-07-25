@@ -11,7 +11,6 @@
 
 @interface ViewController ()
 @property (weak, nonatomic) IBOutlet NMMAutolayoutScrollView *scrollView;
-@property (weak, nonatomic) IBOutlet NMMAutolayoutScrollView *scrollView2;
 
 @end
 
@@ -19,71 +18,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
-    
-    //  [self.scrollView insertSubView:temp];
-    
-    //  UIView *temp = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 100, 50)];
-    //  temp.backgroundColor  = [UIColor blackColor];
-    //  UIView *temp2 = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 100, 70)];
-    //  temp2.backgroundColor  = [UIColor greenColor];
-    //  UIView *temp3 = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 100, 110)];
-    //  temp3.backgroundColor  = [UIColor redColor];
-    
-    //  [self.tpView insertSubview:temp withPadding:UIEdgeInsetsMake(0, 0, 0, 0)];
-    //  [self.tpView insertSubview:temp2 withPadding:UIEdgeInsetsMake(0, 0, 0, 0)];
-    //  [self.tpView insertSubview:temp3 withPadding:UIEdgeInsetsMake(0, 0, 0, 0)];
-    
-    
-    
-    //  self.scrollView.vertical = true;
-    //  for (int i = 0; i < 20; i ++) {
-    //    CGFloat height =  (arc4random() % 3 + 1) * 20;
-    //    UILabel *temp = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 100, height)];
-    //    temp.text = [NSString stringWithFormat:@"%d", i];
-    //    temp.font = [UIFont systemFontOfSize:30];
-    //    temp.textColor = [UIColor whiteColor];
-    //    temp.backgroundColor  = [UIColor blackColor];
-    //    [self.scrollView insertSubView:temp withDistanceFromLastView:arc4random() % 10];
-    //  }
-    //
-    //
-    //  self.scrollView2.vertical = false;
-    //  for (int i = 22; i < 40; i ++) {
-    //    CGFloat height =  (arc4random() % 3 + 1) * 20;
-    //    UILabel *temp = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 100, height)];
-    //    temp.text = [NSString stringWithFormat:@"%d", i];
-    //    temp.font = [UIFont systemFontOfSize:30];
-    //    temp.textColor = [UIColor whiteColor];
-    //    temp.backgroundColor  = [UIColor blackColor];
-    //    [self.scrollView2 insertSubView:temp withDistanceFromLastView:arc4random() % 10];
-    //  }
-    self.scrollView.vertical = true;
+
 }
 
-- (IBAction)addHead:(id)sender {
-    NSString *labelStr = [NSString stringWithFormat:@"%d", (int)[self.scrollView.autoLayoutViews count]];
-    UILabel *label = [self createLabel:labelStr];
-    [self.scrollView insertSubview:label withDistanceFromLastViews:10 atIndex:0];
-}
-- (IBAction)addMid:(id)sender {
-    NSInteger count = [self.scrollView.autoLayoutViews count];
-    NSString *labelStr = [NSString stringWithFormat:@"%d", (int)count];
-    UILabel *label = [self createLabel:labelStr];
-    [self.scrollView insertSubview:label withDistanceFromLastViews:count atIndex:count/2];
-}
-- (IBAction)addTail:(id)sender {
-    NSInteger count = [self.scrollView.autoLayoutViews count];
-    NSString *labelStr = [NSString stringWithFormat:@"%d", (int)count];
-    UILabel *label = [self createLabel:labelStr];
-    [self.scrollView insertSubview:label withDistanceFromLastViews:count atIndex:count];
-}
-- (IBAction)resizeSubView:(id)sender {
-    NSInteger count = [self.scrollView.autoLayoutViews count];
-    //  [self.scrollView changeViewHeightTo:15 atIndex:count];
-    [self.scrollView removeSubViewAtIndex:count/2];
-    //  [self.scrollView removeSubViewAtIndex:count];
-}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -91,21 +28,39 @@
 }
 
 - (IBAction)rotate:(id)sender {
-    self.scrollView.vertical = !self.scrollView.vertical;
+    self.scrollView.portraitArrange = !self.scrollView.portraitArrange;
 }
 
-- (IBAction)randomInsert:(id)sender {
-    NSString *labelStr = [NSString stringWithFormat:@"%d", (int)[self.scrollView.autoLayoutViews count]];
-    NSInteger index = arc4random() %  ([self.scrollView.autoLayoutViews count] + 1);
-    UILabel *label = [self createLabel:labelStr];
-    [self.scrollView insertSubview:label withDistanceFromLastViews:index atIndex:index];
+
+- (IBAction)addSubView:(id)sender {
+//    UIView *view = [self createRandomView];
+    NSInteger insertIndex = arc4random() % self.scrollView.subviews.count /2;
+    NSInteger padding = arc4random() % 20;
+    
+    UIView *view = [self createLabel:[NSString stringWithFormat:@"%@",@(self.scrollView.subviews.count)]];
+    [self.scrollView insertSubView:view atIndex:insertIndex ailgnType:1 SizeType:1 priorPadding:padding];
+    NSLog(@"insert index is %@" , @(insertIndex));
 }
 
-- (IBAction)randomRemove:(id)sender {
-    NSInteger index = arc4random() %  [self.scrollView.autoLayoutViews count];
-    [self.scrollView removeSubViewAtIndex:index];
+
+
+- (UIColor *)color {
+    CGFloat hue = ( arc4random() % 256 / 256.0 );  //  0.0 to 1.0
+    CGFloat saturation = ( arc4random() % 128 / 256.0 ) + 0.5;  //  0.5 to 1.0, away from white
+    CGFloat brightness = ( arc4random() % 128 / 256.0 ) + 0.5;  //  0.5 to 1.0, away from black
+    UIColor *color = [UIColor colorWithHue:hue saturation:saturation brightness:brightness alpha:1];
+    return color;
 }
 
+
+
+- (UIView *)createRandomView {
+    CGFloat height =  (arc4random() % 100 ) + 20;
+    CGFloat width =  (arc4random() % 100 ) + 20;
+    UIView *view = [[UIView alloc]initWithFrame:CGRectMake(0, 0, height, width)];
+    view.backgroundColor = [self color];
+    return view;
+}
 
 - (UILabel *)createLabel:(NSString *)string {
     CGFloat size1 =  (arc4random() % 3 + 1) * 20;
@@ -114,7 +69,8 @@
     temp.text = [NSString stringWithFormat:@"%@", string];
     temp.font = [UIFont systemFontOfSize:30];
     temp.textColor = [UIColor whiteColor];
-    temp.backgroundColor  = [UIColor blackColor];
+    temp.backgroundColor  = [self color];
+    [temp sizeToFit];
     return temp;
 }
 
