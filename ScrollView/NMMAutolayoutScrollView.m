@@ -8,44 +8,102 @@
 
 #import "NMMAutolayoutScrollView.h"
 
+
+static NSString * const kNMMAlignTypeChange = @"kNMMAlignTypeChange";
+static NSString * const kNMMSizeTypeChange = @"kNMMSizeTypeChange";
+
 @interface NMMSubViewConfiguration : NSObject
 
-
 @property (strong, nonatomic) UIView *loadView;
+@property (assign, nonatomic) NMMSubviewAlignType oriAilgnType;
+@property (assign, nonatomic) NMMSubViewSizeType oriSizeType;
 
-
-@property (assign, nonatomic) CGSize inputSize;
-@property (assign, nonatomic) CGFloat padding;
-
-@property (strong, nonatomic) NSLayoutConstraint *landscapeTop;
+@property (strong, nonatomic) NSLayoutConstraint *landscapeAlign;
 @property (strong, nonatomic) NSLayoutConstraint *landscapeLeading;
 @property (strong, nonatomic) NSLayoutConstraint *landscapeWidth;
 @property (strong, nonatomic) NSLayoutConstraint *landscapeHeight;
 
 
 @property (strong, nonatomic) NSLayoutConstraint *portraitTop;
-@property (strong, nonatomic) NSLayoutConstraint *portraitLeading;
+@property (strong, nonatomic) NSLayoutConstraint *portraitAlign;
 @property (strong, nonatomic) NSLayoutConstraint *portraitWidth;
 @property (strong, nonatomic) NSLayoutConstraint *portraitHeight;
 
+//Only for zero.
+@property (nonatomic, strong) NSLayoutConstraint *constraintForZeroPotraitTrailing;
+@property (nonatomic, strong) NSLayoutConstraint *constraintForZeroLandscapeBottom;
 
 - (NSArray *)landscapeConstraints;
 - (NSArray *)portraitConstraints;
 
 @end
 
-
 @implementation NMMSubViewConfiguration
+
+- (instancetype)init {
+    if (self = [super init]) {
+        [[NSNotificationCenter defaultCenter]addObserver:self  selector:@selector(changeAlignConstraint:) name:kNMMAlignTypeChange object:nil];
+        [[NSNotificationCenter defaultCenter]addObserver:self  selector:@selector(changeSizeConstraint:) name:kNMMSizeTypeChange object:nil];
+    }
+    return self;
+}
+
+- (void)changeAlignConstraint:(NSNotification *)noti {
+    
+}
+
+- (void)changeSizeConstraint:(NSNotification *)noti {
+    id obj = [noti object];
+    NMMSubViewSizeType sizeType = [obj integerValue];
+    if (sizeType == SubViewSizeType_OriSize) {
+        sizeType = self.oriSizeType;
+    }
+    CGFloat multipler = [NMMAutolayoutScrollView convertSizeTypeToMultiplier:sizeType];
+    
+    UIView *firstView = self.landscapeHeight.firstItem;
+    UIView *secondView = self.landscapeHeight.secondItem;
+    BOOL active = self.landscapeHeight.active;
+    
+    self.landscapeHeight.active = false;
+    self.portraitWidth.active = false;
+    
+    self.landscapeHeight = [NSLayoutConstraint constraintWithItem:firstView
+                                                        attribute:NSLayoutAttributeHeight
+                                                        relatedBy:NSLayoutRelationEqual
+                                                           toItem:secondView
+                                                        attribute:NSLayoutAttributeHeight
+                                                       multiplier:multipler
+                                                         constant:0];
+    self.portraitWidth = [NSLayoutConstraint constraintWithItem:firstView
+                                                      attribute:NSLayoutAttributeWidth
+                                                      relatedBy:NSLayoutRelationEqual
+                                                         toItem:secondView
+                                                      attribute:NSLayoutAttributeWidth
+                                                     multiplier:multipler
+                                                       constant:0];
+    self.landscapeHeight.active = active;
+    self.portraitWidth.active = !active;
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 
 - (NSString *)description {
     return [NSString stringWithFormat:@"LoadView %@, ptTop %@, ldLeading %@" , self.loadView, self.portraitTop, self.landscapeLeading];
 }
 
 - (NSArray *)landscapeConstraints {
-    return @[_landscapeHeight, _landscapeLeading, _landscapeTop , _landscapeWidth];
+    if (_constraintForZeroLandscapeBottom) {
+        return @[_landscapeHeight, _landscapeLeading, _landscapeAlign , _landscapeWidth, _constraintForZeroLandscapeBottom];
+    }
+    return @[_landscapeHeight, _landscapeLeading, _landscapeAlign , _landscapeWidth];
 }
 - (NSArray *)portraitConstraints {
-    return @[_portraitHeight, _portraitLeading, _portraitTop, _portraitWidth];
+    if (_constraintForZeroPotraitTrailing) {
+        return @[_portraitHeight, _portraitAlign, _portraitTop, _portraitWidth, _constraintForZeroPotraitTrailing];
+    }
+    return @[_portraitHeight, _portraitAlign, _portraitTop, _portraitWidth];
 }
 @end
 
@@ -57,8 +115,8 @@
 @end
 
 @implementation NMMAutolayoutScrollView {
-    CGFloat verticalContentLength;
-    CGFloat horizonalContentLength;
+    CGFloat portriatContentLength;
+    CGFloat landscapeContentLength;
     UILabel *zeroView;
     BOOL showZeroView;
 }
@@ -92,8 +150,8 @@
     
     self.translatesAutoresizingMaskIntoConstraints = false;
     
-    verticalContentLength = 0;
-    horizonalContentLength = 0;
+    portriatContentLength = 0;
+    landscapeContentLength = 0;
     self.configurations = [NSMutableArray array];
     
     self.backgroundColor = [UIColor blackColor];
@@ -107,9 +165,9 @@
 
 - (void)layoutSubviews {
     if (self.portraitArrange) {
-        self.contentSize = CGSizeMake(CGRectGetWidth(self.frame), verticalContentLength);
+        self.contentSize = CGSizeMake(CGRectGetWidth(self.frame), portriatContentLength);
     } else {
-        self.contentSize = CGSizeMake(horizonalContentLength , CGRectGetHeight(self.frame));
+        self.contentSize = CGSizeMake(landscapeContentLength , CGRectGetHeight(self.frame));
     }
     [super layoutSubviews];
 }
@@ -162,6 +220,15 @@
                                                                         attribute:NSLayoutAttributeLeading
                                                                        multiplier:1.0
                                                                          constant:0];
+    
+    NSLayoutConstraint *landscapeBottom = [NSLayoutConstraint constraintWithItem:zeroView
+                                                                       attribute:NSLayoutAttributeBottom
+                                                                       relatedBy:NSLayoutRelationEqual
+                                                                          toItem:self
+                                                                       attribute:NSLayoutAttributeBottom
+                                                                      multiplier:1.0
+                                                                        constant:0];
+    
     NSLayoutConstraint *landscapeWidth = [NSLayoutConstraint constraintWithItem:zeroView
                                                                       attribute:NSLayoutAttributeWidth
                                                                       relatedBy:NSLayoutRelationEqual
@@ -176,7 +243,7 @@
                                                                        attribute:NSLayoutAttributeHeight
                                                                       multiplier:1.0
                                                                         constant:0];
-
+    
     
     //Portrait
     NSLayoutConstraint *portraitTop = [NSLayoutConstraint constraintWithItem:zeroView
@@ -193,6 +260,16 @@
                                                                        attribute:NSLayoutAttributeLeading
                                                                       multiplier:1.0
                                                                         constant:0];
+    NSLayoutConstraint *portraitTrailing = [NSLayoutConstraint constraintWithItem:zeroView
+                                                                        attribute:NSLayoutAttributeTrailing
+                                                                        relatedBy:NSLayoutRelationEqual
+                                                                           toItem:self
+                                                                        attribute:NSLayoutAttributeTrailing
+                                                                       multiplier:1.0
+                                                                         constant:0];
+    
+    
+    
     NSLayoutConstraint *portraitWidth = [NSLayoutConstraint constraintWithItem:zeroView
                                                                      attribute:NSLayoutAttributeWidth
                                                                      relatedBy:NSLayoutRelationEqual
@@ -212,13 +289,19 @@
     NMMSubViewConfiguration *configuration = [[NMMSubViewConfiguration alloc]init];
     configuration.landscapeHeight = landscapeHeight;
     configuration.landscapeLeading = landscapeLeading;
-    configuration.landscapeTop = landscapeTop;
     configuration.landscapeWidth = landscapeWidth;
     
+    configuration.landscapeAlign = landscapeTop;
+    configuration.constraintForZeroLandscapeBottom = landscapeBottom;
+    
+    
     configuration.portraitHeight = portraitHeight;
-    configuration.portraitLeading = portraitLeading;
     configuration.portraitTop = portraitTop;
     configuration.portraitWidth = portraitWidth;
+    
+    configuration.portraitAlign = portraitLeading;
+    configuration.constraintForZeroPotraitTrailing= portraitTrailing;
+    
     
     configuration.loadView = zeroView;
     
@@ -234,11 +317,74 @@
 
 #pragma mark - Action
 
-- (void)changeSize:(CGSize)size atIndex:(NSInteger)index {
+- (UIView *)subViewAtIndex:(NSInteger)index {
+    NSInteger fetchIndex = [self getRealIndex:index];
+    NMMSubViewConfiguration *configuration = self.configurations[fetchIndex];
+    return configuration.loadView;
+}
+
+- (void)changeSize:(NMMSubViewSizeType)sizeType atIndex:(NSInteger)index {
     
 }
 
 - (void)changeDistance:(CGFloat)padding atIndex:(NSInteger)index {
+    
+}
+
+- (void)changeSubViewAlignTo:(NMMSubviewAlignType)alignType {
+    
+}
+
+- (void)changeAllSubViewSize:(NMMSubViewSizeType)size {
+    if (self.viewAnimation) {
+        //FIXME: no animation.
+        for (NMMSubViewConfiguration *configuration in self.configurations) {
+            [self changeConfiguration:configuration sizeType:size asNewValue:false];
+        }
+        [self setNeedsUpdateConstraints];
+        [UIView animateWithDuration:0.25f animations:^{
+            [self layoutIfNeeded];
+        }];
+        
+    } else {
+        [[NSNotificationCenter defaultCenter]postNotificationName:kNMMSizeTypeChange object:@(size)];
+    }
+}
+
+
+- (void)changeConfiguration:(NMMSubViewConfiguration *)configuration sizeType:(NMMSubViewSizeType)type asNewValue:(BOOL)asNewValue {
+    NMMSubViewSizeType sizeType = type;
+    if (sizeType == SubViewSizeType_OriSize) {
+        sizeType = configuration.oriSizeType;
+    }
+    CGFloat multipler = [NMMAutolayoutScrollView convertSizeTypeToMultiplier:sizeType];
+    
+    UIView *firstView = configuration.landscapeHeight.firstItem;
+    UIView *secondView = configuration.landscapeHeight.secondItem;
+    BOOL active = configuration.landscapeHeight.active;
+    
+    configuration.landscapeHeight.active = false;
+    configuration.portraitWidth.active = false;
+    
+    configuration.landscapeHeight = [NSLayoutConstraint constraintWithItem:firstView
+                                                                 attribute:NSLayoutAttributeHeight
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:secondView
+                                                                 attribute:NSLayoutAttributeHeight
+                                                                multiplier:multipler
+                                                                  constant:0];
+    configuration.portraitWidth = [NSLayoutConstraint constraintWithItem:firstView
+                                                               attribute:NSLayoutAttributeWidth
+                                                               relatedBy:NSLayoutRelationEqual
+                                                                  toItem:secondView
+                                                               attribute:NSLayoutAttributeWidth
+                                                              multiplier:multipler
+                                                                constant:0];
+    configuration.landscapeHeight.active = active;
+    configuration.portraitWidth.active = !active;
+    if (asNewValue) {
+        configuration.oriSizeType = type;
+    }
     
 }
 
@@ -256,7 +402,7 @@
     self.alwaysBounceVertical = portraitArrange;
     self.alwaysBounceHorizontal = !portraitArrange;
     [self reArrangeSubViews];
-
+    
 }
 
 
@@ -280,28 +426,38 @@
 }
 
 
+
 - (void)insertSubView:(UIView *)newView
               atIndex:(NSInteger)index
-            ailgnType:(NMSubviewAlignType)ailgnType
-             SizeType:(NMSubViewSizeType)sizeType
+            ailgnType:(NMMSubviewAlignType)ailgnType
+             SizeType:(NMMSubViewSizeType)sizeType
          priorPadding:(CGFloat)distance {
-
-    //Data prepare
-    CGFloat height = CGRectGetHeight(newView.frame);
-    CGFloat widht = CGRectGetWidth(newView.frame);
     
+    //Data prepare
+    CGFloat portraitHeightConstant = CGRectGetHeight(newView.frame);
+    CGFloat landscapeWidhtConstant = CGRectGetWidth(newView.frame);
     NSInteger insertIndex = [self getRealIndex:index];
+    CGFloat sizeMultiplier = [[self class] convertSizeTypeToMultiplier:sizeType];
     [self addSubview:newView];
-
-    NSLog(@"%@: %@ , insertIndex %@", NSStringFromSelector(_cmd), NSStringFromCGRect(newView.frame), @(insertIndex));
-
+    
+    landscapeContentLength = landscapeContentLength + landscapeWidhtConstant + distance;
+    portriatContentLength = portriatContentLength + portraitHeightConstant + distance;
+    if (self.portraitArrange) {
+        self.contentSize = CGSizeMake(CGRectGetWidth(self.frame), portriatContentLength);
+    } else {
+        self.contentSize = CGSizeMake(landscapeContentLength , CGRectGetHeight(self.frame));
+    }
+    [super layoutSubviews];
+    
+    NSLog(@"%@: %@ , insertIndex %@", NSStringFromSelector(_cmd), NSStringFromCGSize(self.contentSize), @(insertIndex));
+    
     [newView invalidateIntrinsicContentSize];
     [newView setTranslatesAutoresizingMaskIntoConstraints:false];
     NMMSubViewConfiguration *priorConfiguration = self.configurations[insertIndex-1];
     UIView *priorView = priorConfiguration.loadView;
     
-    
-    
+    NSLayoutAttribute portraitAlignAttr = [[self class]convertAlignTypeToLayoutAttribute:ailgnType portrait:true];
+    NSLayoutAttribute landscapeAlignAttr = [[self class]convertAlignTypeToLayoutAttribute:ailgnType portrait:false];
     //Portrait
     NSLayoutConstraint *portraitTop = [NSLayoutConstraint constraintWithItem:newView
                                                                    attribute:NSLayoutAttributeTop
@@ -310,19 +466,19 @@
                                                                    attribute:NSLayoutAttributeBottom
                                                                   multiplier:1.0
                                                                     constant:distance];
-    NSLayoutConstraint *portraitLeading = [NSLayoutConstraint constraintWithItem:newView
-                                                                       attribute:NSLayoutAttributeLeading
-                                                                       relatedBy:NSLayoutRelationEqual
-                                                                          toItem:self
-                                                                       attribute:NSLayoutAttributeLeading
-                                                                      multiplier:1.0
-                                                                        constant:0];
+    NSLayoutConstraint *portraitAlign = [NSLayoutConstraint constraintWithItem:newView
+                                                                     attribute:portraitAlignAttr
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:portraitAlignAttr
+                                                                    multiplier:1.0
+                                                                      constant:0];
     NSLayoutConstraint *portraitWidth = [NSLayoutConstraint constraintWithItem:newView
                                                                      attribute:NSLayoutAttributeWidth
                                                                      relatedBy:NSLayoutRelationEqual
                                                                         toItem:self
                                                                      attribute:NSLayoutAttributeWidth
-                                                                    multiplier:1.0
+                                                                    multiplier:sizeMultiplier
                                                                       constant:0];
     NSLayoutConstraint *portraitHeight = [NSLayoutConstraint constraintWithItem:newView
                                                                       attribute:NSLayoutAttributeHeight
@@ -330,77 +486,68 @@
                                                                          toItem:nil
                                                                       attribute:NSLayoutAttributeNotAnAttribute
                                                                      multiplier:1.0
-                                                                       constant:height];
-//    //Landscape
-//    NSLayoutConstraint *landscapeTop = [NSLayoutConstraint constraintWithItem:newView
-//                                                                    attribute:NSLayoutAttributeTop
-//                                                                    relatedBy:NSLayoutRelationEqual
-//                                                                       toItem:self
-//                                                                    attribute:NSLayoutAttributeTop
-//                                                                   multiplier:1.0
-//                                                                     constant:0];
-//    NSLayoutConstraint *landscapeLeading = [NSLayoutConstraint constraintWithItem:newView
-//                                                                        attribute:NSLayoutAttributeLeading
-//                                                                        relatedBy:NSLayoutRelationEqual
-//                                                                           toItem:priorView
-//                                                                        attribute:NSLayoutAttributeTrailing
-//                                                                       multiplier:1.0
-//                                                                         constant:distance];
-//    NSLayoutConstraint *landscapeWidth = [NSLayoutConstraint constraintWithItem:newView
-//                                                                      attribute:NSLayoutAttributeWidth
-//                                                                      relatedBy:NSLayoutRelationEqual
-//                                                                         toItem:nil
-//                                                                      attribute:NSLayoutAttributeNotAnAttribute
-//                                                                     multiplier:1.0
-//                                                                       constant:widht];
-//    NSLayoutConstraint *landscapeHeight = [NSLayoutConstraint constraintWithItem:newView
-//                                                                       attribute:NSLayoutAttributeHeight
-//                                                                       relatedBy:NSLayoutRelationEqual
-//                                                                          toItem:self
-//                                                                       attribute:NSLayoutAttributeHeight
-//                                                                      multiplier:1.0
-//                                                                        constant:0];
+                                                                       constant:portraitHeightConstant];
+    //Landscape
+    NSLayoutConstraint *landscapeAlign = [NSLayoutConstraint constraintWithItem:newView
+                                                                      attribute:landscapeAlignAttr
+                                                                      relatedBy:NSLayoutRelationEqual
+                                                                         toItem:self
+                                                                      attribute:landscapeAlignAttr
+                                                                     multiplier:1.0
+                                                                       constant:0];
+    NSLayoutConstraint *landscapeLeading = [NSLayoutConstraint constraintWithItem:newView
+                                                                        attribute:NSLayoutAttributeLeading
+                                                                        relatedBy:NSLayoutRelationEqual
+                                                                           toItem:priorView
+                                                                        attribute:NSLayoutAttributeTrailing
+                                                                       multiplier:1.0
+                                                                         constant:distance];
+    NSLayoutConstraint *landscapeWidth = [NSLayoutConstraint constraintWithItem:newView
+                                                                      attribute:NSLayoutAttributeWidth
+                                                                      relatedBy:NSLayoutRelationEqual
+                                                                         toItem:nil
+                                                                      attribute:NSLayoutAttributeNotAnAttribute
+                                                                     multiplier:1.0
+                                                                       constant:landscapeWidhtConstant];
+    NSLayoutConstraint *landscapeHeight = [NSLayoutConstraint constraintWithItem:newView
+                                                                       attribute:NSLayoutAttributeHeight
+                                                                       relatedBy:NSLayoutRelationEqual
+                                                                          toItem:self
+                                                                       attribute:NSLayoutAttributeHeight
+                                                                      multiplier:sizeMultiplier
+                                                                        constant:0];
     
-    
-    
-
     
     NMMSubViewConfiguration *colletion = [[NMMSubViewConfiguration alloc]init];
     
     colletion.portraitHeight = portraitHeight;
-    colletion.portraitLeading = portraitLeading;
+    colletion.portraitAlign = portraitAlign;
     colletion.portraitTop = portraitTop;
     colletion.portraitWidth = portraitWidth;
+    
+    colletion.landscapeHeight = landscapeHeight;
+    colletion.landscapeLeading = landscapeLeading;
+    colletion.landscapeAlign = landscapeAlign;
+    colletion.landscapeWidth = landscapeWidth;
+    
     colletion.loadView = newView;
-    colletion.padding = distance;
+    colletion.oriAilgnType = ailgnType;
+    colletion.oriSizeType = sizeType;
     
-//    colletion.landscapeHeight = landscapeHeight;
-//    colletion.landscapeLeading = landscapeLeading;
-//    colletion.landscapeTop = landscapeTop;
-//    colletion.landscapeWidth = landscapeWidth;
-
     
-    [self.configurations insertObject:colletion atIndex:insertIndex];
-
-    if (self.portraitArrange) {
-        [NSLayoutConstraint activateConstraints:[colletion portraitConstraints]];
-    } else {
-        [NSLayoutConstraint activateConstraints:[colletion landscapeConstraints]];
-    }
-
-    if (insertIndex < self.configurations.count-1) {
+    if (insertIndex < self.configurations.count) {
         NMMSubViewConfiguration *trailingConfigureation =  self.configurations[insertIndex];
         
-        UIView *trailingViwe = trailingConfigureation.loadView;
+        NSLayoutConstraint *poTopCon = trailingConfigureation.portraitTop;
+        UIView *trailingView = trailingConfigureation.portraitTop.firstItem;
         BOOL acitve;
         CGFloat padding;
         //Portrait.
         padding = trailingConfigureation.portraitTop.constant;
         acitve = trailingConfigureation.portraitTop.active;
-//        trailingConfigureation.portraitTop.active = false;
-
-        [trailingViwe removeConstraint:trailingConfigureation.portraitTop];
-        trailingConfigureation.portraitTop = [NSLayoutConstraint constraintWithItem:trailingViwe
+        poTopCon.active = false;
+        
+        trailingConfigureation.portraitTop = [NSLayoutConstraint constraintWithItem:trailingView
                                                                           attribute:NSLayoutAttributeTop
                                                                           relatedBy:NSLayoutRelationEqual
                                                                              toItem:newView
@@ -408,35 +555,36 @@
                                                                          multiplier:1
                                                                            constant:padding];
         trailingConfigureation.portraitTop.active = acitve;
-
-//        //Landscape
-//        padding = trailingConfigureation.landscapeLeading.constant;
-//        acitve = trailingConfigureation.landscapeLeading.active;
-//        
-//        trailingConfigureation.landscapeLeading.active = false;
-//        trailingConfigureation.landscapeLeading = [NSLayoutConstraint constraintWithItem:trailingViwe
-//                                                                               attribute:NSLayoutAttributeLeading
-//                                                                               relatedBy:NSLayoutRelationEqual
-//                                                                                  toItem:newView
-//                                                                               attribute:NSLayoutAttributeTrailing
-//                                                                              multiplier:1.0
-//                                                                                constant:padding];
-//        trailingConfigureation.landscapeLeading.active = acitve;
-
         
-        NSLog(@"newView %@", newView.constraints);
-        NSLog(@"trailingView %@", trailingViwe.constraints);
+        //Landscape
+        padding = trailingConfigureation.landscapeLeading.constant;
+        acitve = trailingConfigureation.landscapeLeading.active;
+        
+        trailingConfigureation.landscapeLeading.active = false;
+        trailingConfigureation.landscapeLeading = [NSLayoutConstraint constraintWithItem:trailingView
+                                                                               attribute:NSLayoutAttributeLeading
+                                                                               relatedBy:NSLayoutRelationEqual
+                                                                                  toItem:newView
+                                                                               attribute:NSLayoutAttributeTrailing
+                                                                              multiplier:1.0
+                                                                                constant:padding];
+        trailingConfigureation.landscapeLeading.active = acitve;
+    }
+    [self.configurations insertObject:colletion atIndex:insertIndex];
+    
+    
+    if (self.portraitArrange) {
+        [NSLayoutConstraint activateConstraints:[colletion portraitConstraints]];
+    } else {
+        [NSLayoutConstraint activateConstraints:[colletion landscapeConstraints]];
     }
     
-    
-    
-    [self setNeedsUpdateConstraints];
-    [UIView animateWithDuration:0.25f animations:^{
-        [self layoutIfNeeded];
-    }];
-
-    
-
+    if (self.viewAnimation) {
+        [self setNeedsUpdateConstraints];
+        [UIView animateWithDuration:0.25f animations:^{
+            [self layoutIfNeeded];
+        }];
+    }
 }
 
 - (void)removeSubViewAtIndex:(NSInteger)index {
@@ -464,8 +612,69 @@
     return insertIndex;
 }
 
++ (CGFloat)convertSizeTypeToMultiplier:(NMMSubViewSizeType)sizeType {
+    CGFloat sizeMultiplier = 0;
+    switch (sizeType) {
+        case SubViewSizeType_Full:
+            sizeMultiplier = 1;
+            break;
+        case SubViewSizeType_Quarter:
+            sizeMultiplier = 0.25;
+            break;
+            
+        case SubViewSizeType_Half:
+            sizeMultiplier = 0.5;
+            break;
+        case SubViewSizeType_ThreeQuarter:
+            sizeMultiplier = 0.75;
+            break;
+        default:
+            sizeMultiplier = 1;
+            break;
+    }
+    return sizeMultiplier;
+}
+
+
++ (NSLayoutAttribute)convertAlignTypeToLayoutAttribute:(NMMSubviewAlignType)alignType portrait:(BOOL)portrait {
+    //    SubviewAlignType_Center,
+    //    SubviewAlignType_Left,
+    //    SubviewAlignType_Right,
+    //    SubviewAlignType_OriAlign,
+    
+    switch (alignType) {
+        case SubviewAlignType_Center:
+            if (portrait) {
+                return NSLayoutAttributeCenterX;
+                
+            } else {
+                return NSLayoutAttributeCenterY;
+            }
+            break;
+        case SubviewAlignType_Left:
+            if (portrait) {
+                return NSLayoutAttributeLeading;
+            } else {
+                return NSLayoutAttributeBottom;
+            }
+            break;
+            
+        case SubviewAlignType_Right:
+            if (portrait) {
+                return NSLayoutAttributeTrailing;
+            } else {
+                return NSLayoutAttributeTop;
+            }
+            break;
+        default:
+            if (portrait) {
+                return NSLayoutAttributeLeading;
+            } else {
+                return NSLayoutAttributeBottom;
+            }
+            break;
+    }
+    return NSLayoutAttributeNotAnAttribute;
+}
 
 @end
-
-
-

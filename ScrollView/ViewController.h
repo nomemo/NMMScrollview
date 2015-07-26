@@ -14,5 +14,7 @@
 
 - (IBAction)addSubView:(id)sender;
 
+- (IBAction)sizeChange:(id)sender;
+
 @end
 

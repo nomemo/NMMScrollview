@@ -34,12 +34,20 @@
 
 - (IBAction)addSubView:(id)sender {
 //    UIView *view = [self createRandomView];
-    NSInteger insertIndex = arc4random() % self.scrollView.subviews.count /2;
+    NSInteger insertIndex = arc4random() % self.scrollView.subviews.count;
     NSInteger padding = arc4random() % 20;
-    
+    NSInteger sizeType = arc4random() % 4;
+    NSInteger alignType = arc4random() % 3;
     UIView *view = [self createLabel:[NSString stringWithFormat:@"%@",@(self.scrollView.subviews.count)]];
-    [self.scrollView insertSubView:view atIndex:insertIndex ailgnType:1 SizeType:1 priorPadding:padding];
-    NSLog(@"insert index is %@" , @(insertIndex));
+    NSLog(@"insert index is %@, padding %@, sizeType %@, alignType %@ " , @(insertIndex), @(padding), @(sizeType), @(alignType));
+
+    [self.scrollView insertSubView:view atIndex:insertIndex ailgnType:alignType SizeType:sizeType priorPadding:padding];
+}
+
+- (IBAction)sizeChange:(id)sender {
+    NSInteger sizeType = arc4random() % 5;
+    NSLog(@"change all subView size to %@", @(sizeType));
+    [self.scrollView changeAllSubViewSize:sizeType];
 }
 
 

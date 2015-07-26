@@ -12,21 +12,25 @@ typedef enum : NSUInteger {
     SubviewAlignType_Center,
     SubviewAlignType_Left,
     SubviewAlignType_Right,
-    SubviewAlignType_Custom,
-} NMSubviewAlignType;
+    SubviewAlignType_OriAlign,
+} NMMSubviewAlignType;
 
 typedef enum : NSUInteger {
-    SubViewSizeType_FULL,
-    SubViewSizeType_QUARTER,
-    SubViewSizeType_HALF,
-    SubViewSizeType_THREEQUARTER,
-    SubViewSizeType_SELF,
-} NMSubViewSizeType;
+    SubViewSizeType_Full,
+    SubViewSizeType_Quarter,
+    SubViewSizeType_Half,
+    SubViewSizeType_ThreeQuarter,
+    SubViewSizeType_OriSize,
+} NMMSubViewSizeType;
 
+@class NMMAutolayoutScrollView;
+@protocol NMMAutolayoutScrollViewDelegate <NSObject>
+
+- (void)scrollView:(NMMAutolayoutScrollView *)scrollView touchSubviewAtIndex:(NSInteger)index;
+
+@end
 
 @interface NMMAutolayoutScrollView : UIScrollView
-
-@property (nonatomic, assign) NMSubviewAlignType alignType;
 
 @property (nonatomic, assign) NSInteger limit;
 
@@ -36,6 +40,9 @@ typedef enum : NSUInteger {
 
 @property (nonatomic, assign) CGFloat defautlPadding;
 
+@property (weak, nonatomic) id<NMMAutolayoutScrollViewDelegate> nmmDelegate;
+
+- (UIView *)subViewAtIndex:(NSInteger)index;
 
 #pragma mark - Action
 
@@ -43,16 +50,26 @@ typedef enum : NSUInteger {
 
 - (void)insertSubView:(UIView *)newView
               atIndex:(NSInteger)index
-            ailgnType:(NMSubviewAlignType)ailgnType
-             SizeType:(NMSubViewSizeType)sizeType
+            ailgnType:(NMMSubviewAlignType)ailgnType
+             SizeType:(NMMSubViewSizeType)sizeType
          priorPadding:(CGFloat)distance;
 
 - (void)removeSubViewAtIndex:(NSInteger)index;
 
 #pragma mark - Change SubView
 
-- (void)changeSize:(CGSize)size atIndex:(NSInteger)index;
+- (void)changeSize:(NMMSubViewSizeType)sizeType atIndex:(NSInteger)index;
 
 - (void)changeDistance:(CGFloat)padding atIndex:(NSInteger)index;
+
+- (void)changeSubViewAlignTo:(NMMSubviewAlignType)alignType;
+
+- (void)changeAllSubViewSize:(NMMSubViewSizeType)sizeType;
+
+
+#pragma mark - Class method
+
++ (CGFloat)convertSizeTypeToMultiplier:(NMMSubViewSizeType)sizeType;
+
 
 @end

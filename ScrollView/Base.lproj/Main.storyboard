@@ -20,39 +20,57 @@
                                 <rect key="frame" x="16" y="28" width="568" height="513"/>
                             </scrollView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UpS-nV-b9G">
-                                <rect key="frame" x="538" y="562" width="46" height="30"/>
-                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <rect key="frame" x="400" y="570" width="200" height="30"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="30" id="GDq-L1-Ns9"/>
-                                    <constraint firstAttribute="width" constant="46" id="ZC0-te-3Dv"/>
+                                    <constraint firstAttribute="height" constant="30" id="bsc-eJ-FqG"/>
                                 </constraints>
                                 <state key="normal" title="Rotate">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
                                     <action selector="rotate:" destination="kNT-zG-32X" eventType="touchUpInside" id="Vhh-Wb-wse"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="G6P-KW-R7P">
-                                <rect key="frame" x="16" y="562" width="61" height="30"/>
-                                <state key="normal" title="AddView">
+                                <rect key="frame" x="0.0" y="570" width="200" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="IoA-wJ-O0m"/>
+                                </constraints>
+                                <state key="normal" title="NewView">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
                                     <action selector="addSubView:" destination="kNT-zG-32X" eventType="touchUpInside" id="ZC3-CA-Jmw"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CGx-99-hSM">
+                                <rect key="frame" x="200" y="570" width="200" height="30"/>
+                                <state key="normal" title="AllSizeChange">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="sizeChange:" destination="kNT-zG-32X" eventType="touchUpInside" id="6ug-4T-d9Z"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="UpS-nV-b9G" firstAttribute="leading" secondItem="CGx-99-hSM" secondAttribute="trailing" id="2wK-8i-Xtv"/>
+                            <constraint firstItem="CGx-99-hSM" firstAttribute="width" secondItem="G6P-KW-R7P" secondAttribute="width" id="6O7-Tm-c9W"/>
+                            <constraint firstItem="G6P-KW-R7P" firstAttribute="leading" secondItem="ixM-ns-Zc2" secondAttribute="leading" id="ACs-Pr-tdY"/>
                             <constraint firstItem="3N1-AZ-QuH" firstAttribute="top" secondItem="3kV-yU-HtP" secondAttribute="bottom" constant="59" id="DaS-xt-42c"/>
+                            <constraint firstItem="3N1-AZ-QuH" firstAttribute="top" secondItem="CGx-99-hSM" secondAttribute="bottom" id="Ezg-m7-aH4"/>
+                            <constraint firstItem="UpS-nV-b9G" firstAttribute="height" secondItem="G6P-KW-R7P" secondAttribute="height" id="FKA-y5-zGH"/>
+                            <constraint firstAttribute="trailing" secondItem="UpS-nV-b9G" secondAttribute="trailing" id="Fwo-1B-zuY"/>
+                            <constraint firstItem="UpS-nV-b9G" firstAttribute="width" secondItem="G6P-KW-R7P" secondAttribute="width" id="XVn-CV-Rmq"/>
                             <constraint firstItem="3kV-yU-HtP" firstAttribute="leading" secondItem="ixM-ns-Zc2" secondAttribute="leading" constant="16" id="bGZ-t0-IjW"/>
+                            <constraint firstItem="CGx-99-hSM" firstAttribute="leading" secondItem="G6P-KW-R7P" secondAttribute="trailing" id="cSh-17-3Yn"/>
                             <constraint firstAttribute="trailing" secondItem="3kV-yU-HtP" secondAttribute="trailing" constant="16" id="dXz-I9-DLZ"/>
-                            <constraint firstItem="G6P-KW-R7P" firstAttribute="leading" secondItem="ixM-ns-Zc2" secondAttribute="leading" constant="16" id="dkT-aY-04c"/>
-                            <constraint firstAttribute="trailing" secondItem="UpS-nV-b9G" secondAttribute="trailing" constant="16" id="jEG-gj-hpg"/>
-                            <constraint firstItem="3N1-AZ-QuH" firstAttribute="top" secondItem="UpS-nV-b9G" secondAttribute="bottom" constant="8" id="lhc-xa-MbN"/>
+                            <constraint firstItem="3N1-AZ-QuH" firstAttribute="top" secondItem="UpS-nV-b9G" secondAttribute="bottom" id="djC-xd-ZrB"/>
+                            <constraint firstItem="3N1-AZ-QuH" firstAttribute="top" secondItem="G6P-KW-R7P" secondAttribute="bottom" id="oJa-6t-Nme"/>
                             <constraint firstItem="3kV-yU-HtP" firstAttribute="top" secondItem="Fs9-to-LY9" secondAttribute="bottom" constant="8" id="osq-Dd-LbF"/>
-                            <constraint firstItem="3N1-AZ-QuH" firstAttribute="top" secondItem="G6P-KW-R7P" secondAttribute="bottom" constant="8" id="rkK-tf-gEA"/>
+                            <constraint firstItem="CGx-99-hSM" firstAttribute="height" secondItem="G6P-KW-R7P" secondAttribute="height" id="rUz-BK-pmZ"/>
                         </constraints>
                     </view>
                     <connections>
@@ -61,7 +79,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UVA-5U-uyK" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="89" y="985"/>
+            <point key="canvasLocation" x="151" y="988"/>
         </scene>
     </scenes>
 </document>
