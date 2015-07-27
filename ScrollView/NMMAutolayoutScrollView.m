@@ -15,7 +15,7 @@ static NSString * const kNMMSizeTypeChange = @"kNMMSizeTypeChange";
 @interface NMMSubViewConfiguration : NSObject
 
 @property (strong, nonatomic) UIView *loadView;
-@property (assign, nonatomic) NMMSubviewAlignType oriAilgnType;
+@property (assign, nonatomic) NMMSubviewAlignType orialignType;
 @property (assign, nonatomic) NMMSubViewSizeType oriSizeType;
 
 @property (strong, nonatomic) NSLayoutConstraint *landscapeAlign;
@@ -49,6 +49,49 @@ static NSString * const kNMMSizeTypeChange = @"kNMMSizeTypeChange";
 }
 
 - (void)changeAlignConstraint:(NSNotification *)noti {
+    
+    if (self.constraintForZeroPotraitTrailing) {
+        return;
+    }
+    if (self.constraintForZeroLandscapeBottom) {
+        return;
+    }
+    
+    id obj = [noti object];
+    NMMSubviewAlignType alignType = [obj integerValue];
+    if (alignType == SubviewAlignType_OriAlign) {
+        alignType = self.orialignType;
+    }
+    NSLayoutAttribute portraitAlignAttr = [NMMAutolayoutScrollView convertAlignTypeToLayoutAttribute:alignType portrait:true];
+    NSLayoutAttribute landscapeAlignAttr = [NMMAutolayoutScrollView convertAlignTypeToLayoutAttribute:alignType portrait:false];
+    
+    UIView *firstView = self.portraitAlign.firstItem;
+    UIView *secondView = self.portraitAlign.secondItem;
+    BOOL active = self.portraitAlign.active;
+    
+    self.portraitAlign.active = false;
+    self.landscapeAlign.active = false;
+
+    NSLayoutConstraint *portraitAlign = [NSLayoutConstraint constraintWithItem:firstView
+                                                                     attribute:portraitAlignAttr
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:secondView
+                                                                     attribute:portraitAlignAttr
+                                                                    multiplier:1.0
+                                                                      constant:0];
+    self.portraitAlign = portraitAlign;
+    self.portraitAlign.active = active;
+    
+    
+    NSLayoutConstraint *landscapeAlign = [NSLayoutConstraint constraintWithItem:firstView
+                                                                      attribute:landscapeAlignAttr
+                                                                      relatedBy:NSLayoutRelationEqual
+                                                                         toItem:secondView
+                                                                      attribute:landscapeAlignAttr
+                                                                     multiplier:1.0
+                                                                       constant:0];
+    self.landscapeAlign = landscapeAlign;
+    self.landscapeAlign.active = !active;
     
 }
 
@@ -332,7 +375,7 @@ static NSString * const kNMMSizeTypeChange = @"kNMMSizeTypeChange";
 }
 
 - (void)changeSubViewAlignTo:(NMMSubviewAlignType)alignType {
-    
+    [[NSNotificationCenter defaultCenter]postNotificationName:kNMMAlignTypeChange object:@(alignType)];
 }
 
 - (void)changeAllSubViewSize:(NMMSubViewSizeType)size {
@@ -429,7 +472,7 @@ static NSString * const kNMMSizeTypeChange = @"kNMMSizeTypeChange";
 
 - (void)insertSubView:(UIView *)newView
               atIndex:(NSInteger)index
-            ailgnType:(NMMSubviewAlignType)ailgnType
+            alignType:(NMMSubviewAlignType)alignType
              SizeType:(NMMSubViewSizeType)sizeType
          priorPadding:(CGFloat)distance {
     
@@ -456,8 +499,8 @@ static NSString * const kNMMSizeTypeChange = @"kNMMSizeTypeChange";
     NMMSubViewConfiguration *priorConfiguration = self.configurations[insertIndex-1];
     UIView *priorView = priorConfiguration.loadView;
     
-    NSLayoutAttribute portraitAlignAttr = [[self class]convertAlignTypeToLayoutAttribute:ailgnType portrait:true];
-    NSLayoutAttribute landscapeAlignAttr = [[self class]convertAlignTypeToLayoutAttribute:ailgnType portrait:false];
+    NSLayoutAttribute portraitAlignAttr = [[self class]convertAlignTypeToLayoutAttribute:alignType portrait:true];
+    NSLayoutAttribute landscapeAlignAttr = [[self class]convertAlignTypeToLayoutAttribute:alignType portrait:false];
     //Portrait
     NSLayoutConstraint *portraitTop = [NSLayoutConstraint constraintWithItem:newView
                                                                    attribute:NSLayoutAttributeTop
@@ -531,7 +574,7 @@ static NSString * const kNMMSizeTypeChange = @"kNMMSizeTypeChange";
     colletion.landscapeWidth = landscapeWidth;
     
     colletion.loadView = newView;
-    colletion.oriAilgnType = ailgnType;
+    colletion.orialignType = alignType;
     colletion.oriSizeType = sizeType;
     
     

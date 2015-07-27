@@ -50,7 +50,7 @@ typedef enum : NSUInteger {
 
 - (void)insertSubView:(UIView *)newView
               atIndex:(NSInteger)index
-            ailgnType:(NMMSubviewAlignType)ailgnType
+            alignType:(NMMSubviewAlignType)alignType
              SizeType:(NMMSubViewSizeType)sizeType
          priorPadding:(CGFloat)distance;
 
@@ -71,5 +71,6 @@ typedef enum : NSUInteger {
 
 + (CGFloat)convertSizeTypeToMultiplier:(NMMSubViewSizeType)sizeType;
 
++ (NSLayoutAttribute)convertAlignTypeToLayoutAttribute:(NMMSubviewAlignType)alignType portrait:(BOOL)portrait;
 
 @end

@@ -41,13 +41,19 @@
     UIView *view = [self createLabel:[NSString stringWithFormat:@"%@",@(self.scrollView.subviews.count)]];
     NSLog(@"insert index is %@, padding %@, sizeType %@, alignType %@ " , @(insertIndex), @(padding), @(sizeType), @(alignType));
 
-    [self.scrollView insertSubView:view atIndex:insertIndex ailgnType:alignType SizeType:sizeType priorPadding:padding];
+    [self.scrollView insertSubView:view atIndex:insertIndex alignType:alignType SizeType:sizeType priorPadding:padding];
 }
 
 - (IBAction)sizeChange:(id)sender {
     NSInteger sizeType = arc4random() % 5;
     NSLog(@"change all subView size to %@", @(sizeType));
     [self.scrollView changeAllSubViewSize:sizeType];
+}
+
+- (IBAction)alignChange:(id)sender {
+    NSInteger alignType = arc4random() % 4;
+    NSLog(@"change all align type to %@", @(alignType));
+    [self.scrollView changeSubViewAlignTo:alignType];
 }
 
 

@@ -16,5 +16,7 @@
 
 - (IBAction)sizeChange:(id)sender;
 
+- (IBAction)alignChange:(id)sender;
+
 @end
 
