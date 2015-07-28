@@ -12,13 +12,16 @@
 @interface ViewController ()
 @property (weak, nonatomic) IBOutlet NMMAutolayoutScrollView *scrollView;
 
+@property (assign, nonatomic) NMMSubviewAlignType alignType;
+@property (assign, nonatomic) NMMSubViewSizeType sizeType;
 @end
 
 @implementation ViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+    self.alignType = SubviewAlignType_OriAlign;
+    self.sizeType = SubviewAlignType_OriAlign;
 }
 
 
@@ -38,22 +41,45 @@
     NSInteger padding = arc4random() % 20;
     NSInteger sizeType = arc4random() % 4;
     NSInteger alignType = arc4random() % 3;
-    UIView *view = [self createLabel:[NSString stringWithFormat:@"%@",@(self.scrollView.subviews.count)]];
+    
+    NSInteger showNumber = self.scrollView.subviews.count;
+    NSInteger textLength = arc4random() % 10 + 1;
+    while (textLength --) {
+        showNumber *= 10;
+    }
+    UIView *view = [self createLabel:[NSString stringWithFormat:@"%@",@(showNumber)]];
     NSLog(@"insert index is %@, padding %@, sizeType %@, alignType %@ " , @(insertIndex), @(padding), @(sizeType), @(alignType));
 
     [self.scrollView insertSubView:view atIndex:insertIndex alignType:alignType SizeType:sizeType priorPadding:padding];
 }
 
 - (IBAction)sizeChange:(id)sender {
-    NSInteger sizeType = arc4random() % 5;
-    NSLog(@"change all subView size to %@", @(sizeType));
-    [self.scrollView changeAllSubViewSize:sizeType];
+    self.sizeType ++;
+    if (self.sizeType > SubViewSizeType_OriSize) {
+        self.sizeType = SubViewSizeType_Full;
+    }
+    NSLog(@"change Size %@" , @(_sizeType));
+
+    [self.scrollView changeAllSubViewSize:_sizeType];
 }
 
 - (IBAction)alignChange:(id)sender {
-    NSInteger alignType = arc4random() % 4;
-    NSLog(@"change all align type to %@", @(alignType));
-    [self.scrollView changeSubViewAlignTo:alignType];
+    self.alignType ++;
+    if (self.alignType > SubviewAlignType_OriAlign) {
+        self.alignType = SubviewAlignType_Center;
+    }
+    NSLog(@"change Align %@" , @(_alignType));
+
+    [self.scrollView changeSubViewAlignTo:_alignType];
+}
+
+- (IBAction)deleteView:(id)sender {
+    NSInteger showNumber = self.scrollView.subviews.count;
+    NSInteger index = arc4random() % showNumber;
+    NSLog(@"remove subview %@" , @(index));
+    //    index = showNumber;   /** Remove the last view */
+//        index = 0;   /** Remove the first view */
+    [self.scrollView removeSubViewAtIndex:index];
 }
 
 

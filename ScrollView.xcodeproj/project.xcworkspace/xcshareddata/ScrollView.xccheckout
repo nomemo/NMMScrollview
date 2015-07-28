@@ -7,14 +7,14 @@
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>3BBC4729-6389-4B53-9313-8C883052CAFB</string>
 	<key>IDESourceControlProjectName</key>
-	<string>project</string>
+	<string>ScrollView</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>4FAF1910EC759E286531C726E0FE46CD2D3F5EBB</key>
 		<string>https://github.com/Wing-Of-War/NPScrollview</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>ScrollView.xcodeproj/project.xcworkspace</string>
+	<string>ScrollView.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>4FAF1910EC759E286531C726E0FE46CD2D3F5EBB</key>

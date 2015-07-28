@@ -30,8 +30,10 @@ static NSString * const kNMMSizeTypeChange = @"kNMMSizeTypeChange";
 @property (strong, nonatomic) NSLayoutConstraint *portraitHeight;
 
 //Only for zero.
-@property (nonatomic, strong) NSLayoutConstraint *constraintForZeroPotraitTrailing;
-@property (nonatomic, strong) NSLayoutConstraint *constraintForZeroLandscapeBottom;
+@property (strong, nonatomic) NSLayoutConstraint *constraintForZeroPotraitTrailing;
+@property (strong, nonatomic) NSLayoutConstraint *constraintForZeroLandscapeBottom;
+
+
 
 - (NSArray *)landscapeConstraints;
 - (NSArray *)portraitConstraints;
@@ -71,7 +73,7 @@ static NSString * const kNMMSizeTypeChange = @"kNMMSizeTypeChange";
     
     self.portraitAlign.active = false;
     self.landscapeAlign.active = false;
-
+    
     NSLayoutConstraint *portraitAlign = [NSLayoutConstraint constraintWithItem:firstView
                                                                      attribute:portraitAlignAttr
                                                                      relatedBy:NSLayoutRelationEqual
@@ -96,6 +98,14 @@ static NSString * const kNMMSizeTypeChange = @"kNMMSizeTypeChange";
 }
 
 - (void)changeSizeConstraint:(NSNotification *)noti {
+    
+    if (self.constraintForZeroPotraitTrailing) {
+        return;
+    }
+    if (self.constraintForZeroLandscapeBottom) {
+        return;
+    }
+    
     id obj = [noti object];
     NMMSubViewSizeType sizeType = [obj integerValue];
     if (sizeType == SubViewSizeType_OriSize) {
@@ -153,7 +163,8 @@ static NSString * const kNMMSizeTypeChange = @"kNMMSizeTypeChange";
 
 @interface NMMAutolayoutScrollView ()
 
-@property (nonatomic, strong) NSMutableArray *configurations;
+@property (strong, nonatomic) NSMutableArray *configurations;
+@property (strong, nonatomic) UIGestureRecognizer *gesture;
 
 @end
 
@@ -185,24 +196,26 @@ static NSString * const kNMMSizeTypeChange = @"kNMMSizeTypeChange";
 }
 
 - (void)configureScrollView {
-    NSLog(@"%@", self);
+    //    NSLog(@"%@", self);
     self.backgroundColor = [UIColor clearColor];
     self.bounces = YES;
     self.showsVerticalScrollIndicator = NO;
     self.showsHorizontalScrollIndicator = NO;
-    
     self.translatesAutoresizingMaskIntoConstraints = false;
+    self.backgroundColor = [UIColor blackColor];
     
     portriatContentLength = 0;
     landscapeContentLength = 0;
+    showZeroView = true;
+    
     self.configurations = [NSMutableArray array];
-    
-    self.backgroundColor = [UIColor blackColor];
-    
-    //NEW.
     self.portraitArrange = true;
     self.viewAnimation = true;
-    showZeroView = false;
+    
+    self.delaysContentTouches = NO;
+    UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleTapGestureCaptured:)];
+    singleTap.cancelsTouchesInView = NO;
+    [self addGestureRecognizer:singleTap];
 }
 
 
@@ -361,7 +374,7 @@ static NSString * const kNMMSizeTypeChange = @"kNMMSizeTypeChange";
 #pragma mark - Action
 
 - (UIView *)subViewAtIndex:(NSInteger)index {
-    NSInteger fetchIndex = [self getRealIndex:index];
+    NSInteger fetchIndex = [self getInsertIndex:index];
     NMMSubViewConfiguration *configuration = self.configurations[fetchIndex];
     return configuration.loadView;
 }
@@ -376,21 +389,22 @@ static NSString * const kNMMSizeTypeChange = @"kNMMSizeTypeChange";
 
 - (void)changeSubViewAlignTo:(NMMSubviewAlignType)alignType {
     [[NSNotificationCenter defaultCenter]postNotificationName:kNMMAlignTypeChange object:@(alignType)];
-}
-
-- (void)changeAllSubViewSize:(NMMSubViewSizeType)size {
     if (self.viewAnimation) {
-        //FIXME: no animation.
-        for (NMMSubViewConfiguration *configuration in self.configurations) {
-            [self changeConfiguration:configuration sizeType:size asNewValue:false];
-        }
         [self setNeedsUpdateConstraints];
         [UIView animateWithDuration:0.25f animations:^{
             [self layoutIfNeeded];
         }];
-        
-    } else {
-        [[NSNotificationCenter defaultCenter]postNotificationName:kNMMSizeTypeChange object:@(size)];
+    }
+}
+
+- (void)changeAllSubViewSize:(NMMSubViewSizeType)size {
+    
+    [[NSNotificationCenter defaultCenter]postNotificationName:kNMMSizeTypeChange object:@(size)];
+    if (self.viewAnimation) {
+        [self setNeedsUpdateConstraints];
+        [UIView animateWithDuration:0.25f animations:^{
+            [self layoutIfNeeded];
+        }];
     }
 }
 
@@ -428,7 +442,6 @@ static NSString * const kNMMSizeTypeChange = @"kNMMSizeTypeChange";
     if (asNewValue) {
         configuration.oriSizeType = type;
     }
-    
 }
 
 #pragma mark - SrollView Action
@@ -479,7 +492,7 @@ static NSString * const kNMMSizeTypeChange = @"kNMMSizeTypeChange";
     //Data prepare
     CGFloat portraitHeightConstant = CGRectGetHeight(newView.frame);
     CGFloat landscapeWidhtConstant = CGRectGetWidth(newView.frame);
-    NSInteger insertIndex = [self getRealIndex:index];
+    NSInteger insertIndex = [self getInsertIndex:index];
     CGFloat sizeMultiplier = [[self class] convertSizeTypeToMultiplier:sizeType];
     [self addSubview:newView];
     
@@ -492,7 +505,7 @@ static NSString * const kNMMSizeTypeChange = @"kNMMSizeTypeChange";
     }
     [super layoutSubviews];
     
-    NSLog(@"%@: %@ , insertIndex %@", NSStringFromSelector(_cmd), NSStringFromCGSize(self.contentSize), @(insertIndex));
+    //    NSLog(@"%@: %@ , insertIndex %@", NSStringFromSelector(_cmd), NSStringFromCGSize(self.contentSize), @(insertIndex));
     
     [newView invalidateIntrinsicContentSize];
     [newView setTranslatesAutoresizingMaskIntoConstraints:false];
@@ -631,8 +644,93 @@ static NSString * const kNMMSizeTypeChange = @"kNMMSizeTypeChange";
 }
 
 - (void)removeSubViewAtIndex:(NSInteger)index {
+    NSInteger removeIndex = [self getDeleteIndex:index];
+    if (self.configurations.count == 1) {
+        /** Only have zero view */
+        return;
+    }
+    if (self.configurations.count-1 == removeIndex) {
+        /** Remove the last view */
+        NMMSubViewConfiguration *configure = self.configurations[removeIndex];
+        [configure.loadView removeFromSuperview];
+        [self.configurations removeLastObject];
+        if (self.viewAnimation) {
+            [self setNeedsUpdateConstraints];
+            [UIView animateWithDuration:0.25f animations:^{
+                [self layoutIfNeeded];
+            }];
+        }
+
+        return;
+    }
+    
+    NSLog(@"removeSubViewAtIndex %@, all subview %@", @(removeIndex), @(self.configurations.count));
+    
+    NMMSubViewConfiguration *leadingConfigure = self.configurations[removeIndex-1];
+    NMMSubViewConfiguration *trailingConfigure = self.configurations[removeIndex + 1];
+    
+
+    id firstView = leadingConfigure.loadView;
+    id secondView = trailingConfigure.loadView;
+    CGFloat distance = trailingConfigure.portraitTop.constant;
+    BOOL active = trailingConfigure.portraitTop.active;
+    
+    NMMSubViewConfiguration *configure = self.configurations[removeIndex];
+    [configure.loadView removeFromSuperview];
+    [self.configurations removeObjectAtIndex:removeIndex];
+    
+    trailingConfigure.portraitTop.active = false;
+    trailingConfigure.landscapeLeading.active = false;
+    
+    NSLayoutConstraint *portraitTop = [NSLayoutConstraint constraintWithItem: secondView
+                                                                   attribute:NSLayoutAttributeTop
+                                                                   relatedBy:NSLayoutRelationEqual
+                                                                      toItem:firstView
+                                                                   attribute:NSLayoutAttributeBottom
+                                                                  multiplier:1.0
+                                                                    constant:distance];
+    portraitTop.active = active;
+    NSLayoutConstraint *landscapeLeading = [NSLayoutConstraint constraintWithItem:firstView
+                                                                        attribute:NSLayoutAttributeTrailing
+                                                                        relatedBy:NSLayoutRelationEqual
+                                                                           toItem:secondView
+                                                                        attribute:NSLayoutAttributeLeading
+                                                                       multiplier:1.0
+                                                                         constant:distance];
+    landscapeLeading.active = !active;
+    trailingConfigure.portraitTop = portraitTop;
+    trailingConfigure.landscapeLeading = landscapeLeading;
+    if (self.viewAnimation) {
+        [self setNeedsUpdateConstraints];
+        [UIView animateWithDuration:0.25f animations:^{
+            [self layoutIfNeeded];
+        }];
+    }
+
     
 }
+
+#pragma mark - Touch subview catch
+
+-(BOOL)singleTapGestureCaptured:(UIGestureRecognizer *)gesture {
+    __block NSInteger index = NSNotFound;
+    [self.configurations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        NMMSubViewConfiguration *configure = obj;
+        CGPoint point = [gesture locationInView:configure.loadView];
+        if (CGRectContainsPoint(configure.loadView.bounds, point)) {
+            index = idx;
+            *stop = true;
+        }
+    }];
+    if (index != NSNotFound && self.nmmDelegate) {
+        [self.nmmDelegate scrollView:self touchSubviewAtIndex:index];
+    }
+    return false;
+}
+
+
+
+
 #pragma mark - Utilize.
 
 - (BOOL)checkIndexInBounds:(NSInteger)index {
@@ -643,7 +741,22 @@ static NSString * const kNMMSizeTypeChange = @"kNMMSizeTypeChange";
     return true;
 }
 
-- (NSInteger)getRealIndex:(NSInteger)index {
+- (NSInteger)getDeleteIndex:(NSInteger)index {
+    
+    NSInteger deleteIndex;
+    if (index < 1) {
+        deleteIndex = 1;
+    } else if (index >= self.configurations.count) {
+        deleteIndex = self.configurations.count - 1;
+    } else {
+        deleteIndex = index + 1;
+    }
+    NSLog(@"getDeleteIndex index %@, all subview %@", @(index), @(self.configurations.count));
+    
+    return deleteIndex;
+}
+
+- (NSInteger)getInsertIndex:(NSInteger)index {
     NSInteger insertIndex;
     if (index <= 0) {
         insertIndex = 1;
@@ -680,11 +793,6 @@ static NSString * const kNMMSizeTypeChange = @"kNMMSizeTypeChange";
 
 
 + (NSLayoutAttribute)convertAlignTypeToLayoutAttribute:(NMMSubviewAlignType)alignType portrait:(BOOL)portrait {
-    //    SubviewAlignType_Center,
-    //    SubviewAlignType_Left,
-    //    SubviewAlignType_Right,
-    //    SubviewAlignType_OriAlign,
-    
     switch (alignType) {
         case SubviewAlignType_Center:
             if (portrait) {
@@ -719,5 +827,7 @@ static NSString * const kNMMSizeTypeChange = @"kNMMSizeTypeChange";
     }
     return NSLayoutAttributeNotAnAttribute;
 }
+
+
 
 @end

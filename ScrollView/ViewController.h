@@ -18,5 +18,7 @@
 
 - (IBAction)alignChange:(id)sender;
 
+- (IBAction)deleteView:(id)sender;
+
 @end
 
