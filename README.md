@@ -1,7 +1,7 @@
 # NMMScrollview
 
 
-SubClass of UIScroll view, arrange the subviews automatic.
+SubClass of UIScrollView, automatic arrange the subviews .
 
 ## Easy use.
 
@@ -33,7 +33,7 @@ SubClass of UIScroll view, arrange the subviews automatic.
 
 ~~~
 
-## Demo Show
+## Demo
 
 ![123](https://raw.githubusercontent.com/Wing-Of-War/NPScrollview/master/Gif/1.gif)
 
