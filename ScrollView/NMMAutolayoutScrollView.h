@@ -42,6 +42,8 @@ typedef enum : NSUInteger {
 
 @property (weak, nonatomic) id<NMMAutolayoutScrollViewDelegate> nmmDelegate;
 
+@property (assign, nonatomic) BOOL showZeroView;
+
 - (UIView *)subViewAtIndex:(NSInteger)index;
 
 #pragma mark - Action
@@ -58,14 +60,15 @@ typedef enum : NSUInteger {
 
 #pragma mark - Change SubView
 
-- (void)changeSize:(NMMSubViewSizeType)sizeType atIndex:(NSInteger)index;
-
 - (void)changeDistance:(CGFloat)padding atIndex:(NSInteger)index;
+
+- (void)changeAlign:(NMMSubviewAlignType)algin atIndex:(NSInteger)index;
+
+- (void)changeSize:(NMMSubViewSizeType)sizeType atIndex:(NSInteger)index;
 
 - (void)changeSubViewAlignTo:(NMMSubviewAlignType)alignType;
 
 - (void)changeAllSubViewSize:(NMMSubViewSizeType)sizeType;
-
 
 #pragma mark - Class method
 

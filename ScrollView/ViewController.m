@@ -9,8 +9,10 @@
 #import "ViewController.h"
 #import "NMMAutolayoutScrollView.h"
 
-@interface ViewController ()
+@interface ViewController ()<NMMAutolayoutScrollViewDelegate>
+
 @property (weak, nonatomic) IBOutlet NMMAutolayoutScrollView *scrollView;
+@property (weak, nonatomic) IBOutlet UISegmentedControl *touchAction;
 
 @property (assign, nonatomic) NMMSubviewAlignType alignType;
 @property (assign, nonatomic) NMMSubViewSizeType sizeType;
@@ -22,6 +24,7 @@
     [super viewDidLoad];
     self.alignType = SubviewAlignType_OriAlign;
     self.sizeType = SubviewAlignType_OriAlign;
+    self.scrollView.nmmDelegate = self;
 }
 
 
@@ -36,7 +39,6 @@
 
 
 - (IBAction)addSubView:(id)sender {
-//    UIView *view = [self createRandomView];
     NSInteger insertIndex = arc4random() % self.scrollView.subviews.count;
     NSInteger padding = arc4random() % 20;
     NSInteger sizeType = arc4random() % 4;
@@ -48,7 +50,6 @@
         showNumber *= 10;
     }
     UIView *view = [self createLabel:[NSString stringWithFormat:@"%@",@(showNumber)]];
-    NSLog(@"insert index is %@, padding %@, sizeType %@, alignType %@ " , @(insertIndex), @(padding), @(sizeType), @(alignType));
 
     [self.scrollView insertSubView:view atIndex:insertIndex alignType:alignType SizeType:sizeType priorPadding:padding];
 }
@@ -58,8 +59,6 @@
     if (self.sizeType > SubViewSizeType_OriSize) {
         self.sizeType = SubViewSizeType_Full;
     }
-    NSLog(@"change Size %@" , @(_sizeType));
-
     [self.scrollView changeAllSubViewSize:_sizeType];
 }
 
@@ -68,20 +67,19 @@
     if (self.alignType > SubviewAlignType_OriAlign) {
         self.alignType = SubviewAlignType_Center;
     }
-    NSLog(@"change Align %@" , @(_alignType));
-
     [self.scrollView changeSubViewAlignTo:_alignType];
 }
 
 - (IBAction)deleteView:(id)sender {
     NSInteger showNumber = self.scrollView.subviews.count;
     NSInteger index = arc4random() % showNumber;
-    NSLog(@"remove subview %@" , @(index));
-    //    index = showNumber;   /** Remove the last view */
-//        index = 0;   /** Remove the first view */
     [self.scrollView removeSubViewAtIndex:index];
 }
 
+- (IBAction)showZeroView:(id)sender {
+    UISwitch *st = sender;
+    self.scrollView.showZeroView = st.isOn;
+}
 
 
 - (UIColor *)color {
@@ -112,6 +110,27 @@
     temp.backgroundColor  = [self color];
     [temp sizeToFit];
     return temp;
+}
+
+- (void)scrollView:(NMMAutolayoutScrollView *)scrollView touchSubviewAtIndex:(NSInteger)index {
+    if (self.touchAction.selectedSegmentIndex == 0) {
+        [self.scrollView removeSubViewAtIndex:index];
+    }
+    if (self.touchAction.selectedSegmentIndex == 1) {
+        NSInteger alignType = arc4random() % 3;
+        [self.scrollView changeAlign:alignType atIndex:index];
+    }
+
+    if (self.touchAction.selectedSegmentIndex == 2) {
+        NSInteger padding = arc4random() % 20;
+        [self.scrollView changeDistance:padding atIndex:index];
+    }
+
+    if (self.touchAction.selectedSegmentIndex == 3) {
+        NSInteger sizeType = arc4random() % 4;
+        [self.scrollView changeSize:sizeType  atIndex:index];
+    }
+
 }
 
 @end
