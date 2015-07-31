@@ -2,6 +2,12 @@
 
 
 SubClass of UIScrollView, automatic arrange the subviews .
+Support autolayout and Storyboard.
+
+
+## Install 
+
+Darg `NMMAutolayoutScrollView.h` and `NMMAutolayoutScrollView.m` to your project.
 
 ## Easy use.
 
