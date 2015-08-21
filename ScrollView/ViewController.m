@@ -81,6 +81,9 @@
     self.scrollView.showZeroView = st.isOn;
 }
 
+- (IBAction)clearAllSubView:(id)sender {
+    [self.scrollView removeAllSubViews];
+}
 
 - (UIColor *)color {
     CGFloat hue = ( arc4random() % 256 / 256.0 );  //  0.0 to 1.0

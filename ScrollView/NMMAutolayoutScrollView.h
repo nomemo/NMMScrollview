@@ -58,6 +58,8 @@ typedef enum : NSUInteger {
 
 - (void)removeSubViewAtIndex:(NSInteger)index;
 
+- (void)removeAllSubViews;
+
 #pragma mark - Change SubView
 
 - (void)changeDistance:(CGFloat)padding atIndex:(NSInteger)index;

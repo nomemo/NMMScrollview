@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="kNT-zG-32X">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="kNT-zG-32X">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
@@ -79,7 +79,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="csW-Gi-D40">
-                                <rect key="frame" x="103" y="20" width="51" height="31"/>
+                                <rect key="frame" x="102" y="20" width="51" height="31"/>
                                 <connections>
                                     <action selector="showZeroView:" destination="kNT-zG-32X" eventType="valueChanged" id="G8G-EO-4Iz"/>
                                 </connections>
@@ -97,7 +97,7 @@
                                 </segments>
                             </segmentedControl>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="TouchAction" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="or7-ic-ue0">
-                                <rect key="frame" x="16" y="62" width="95" height="21"/>
+                                <rect key="frame" x="16" y="61" width="95" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
@@ -105,6 +105,15 @@
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3kV-yU-HtP" customClass="NMMAutolayoutScrollView">
                                 <rect key="frame" x="8" y="95" width="584" height="467"/>
                             </scrollView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="v7Q-zh-Gdn">
+                                <rect key="frame" x="555" y="20" width="37" height="30"/>
+                                <state key="normal" title="Clear">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="clearAllSubView:" destination="kNT-zG-32X" eventType="touchUpInside" id="c2f-ba-HwJ"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -116,6 +125,7 @@
                             <constraint firstAttribute="trailing" secondItem="UpS-nV-b9G" secondAttribute="trailing" id="7Va-Ra-wwC"/>
                             <constraint firstItem="3kV-yU-HtP" firstAttribute="leading" secondItem="ixM-ns-Zc2" secondAttribute="leadingMargin" constant="-8" id="7pj-QM-3iP"/>
                             <constraint firstItem="CGx-99-hSM" firstAttribute="width" secondItem="4wh-Bc-6S3" secondAttribute="width" id="7tD-OA-sfa"/>
+                            <constraint firstAttribute="trailing" secondItem="v7Q-zh-Gdn" secondAttribute="trailing" constant="8" id="9uB-fS-6aG"/>
                             <constraint firstItem="3N1-AZ-QuH" firstAttribute="top" secondItem="CGx-99-hSM" secondAttribute="bottom" id="Hoa-pB-nvI"/>
                             <constraint firstItem="A34-TQ-v2G" firstAttribute="leading" secondItem="4wh-Bc-6S3" secondAttribute="trailing" id="JFl-71-5KD"/>
                             <constraint firstItem="4wh-Bc-6S3" firstAttribute="leading" secondItem="CGx-99-hSM" secondAttribute="trailing" id="Klz-rX-MQm"/>
@@ -137,6 +147,7 @@
                             <constraint firstItem="u5J-x0-hQN" firstAttribute="centerY" secondItem="csW-Gi-D40" secondAttribute="centerY" id="syF-EM-cuK"/>
                             <constraint firstItem="A34-TQ-v2G" firstAttribute="width" secondItem="4wh-Bc-6S3" secondAttribute="width" id="tTz-5I-euE"/>
                             <constraint firstItem="G6P-KW-R7P" firstAttribute="leading" secondItem="ixM-ns-Zc2" secondAttribute="leading" id="ujn-TV-piY"/>
+                            <constraint firstItem="v7Q-zh-Gdn" firstAttribute="centerY" secondItem="u5J-x0-hQN" secondAttribute="centerY" constant="-0.5" id="vZi-zB-7LJ"/>
                             <constraint firstItem="3N1-AZ-QuH" firstAttribute="top" secondItem="4wh-Bc-6S3" secondAttribute="bottom" id="vxU-Ev-5Xn"/>
                         </constraints>
                         <variation key="default">

@@ -704,6 +704,14 @@ const CGFloat zeroViewDefaultSize = 20;
     }
 }
 
+- (void)removeAllSubViews {
+    NSInteger count = self.configurations.count;
+    for (int i = 0 ; i < count; i ++) {
+        [self removeSubViewAtIndex:count];
+    }
+
+}
+
 - (void)removeSubViewAtIndex:(NSInteger)index {
     NSUInteger removeIndex = [self getDeleteIndex:index];
     
