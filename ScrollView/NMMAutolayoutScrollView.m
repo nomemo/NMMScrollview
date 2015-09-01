@@ -709,6 +709,8 @@ const CGFloat zeroViewDefaultSize = 20;
     for (int i = 0 ; i < count; i ++) {
         [self removeSubViewAtIndex:count];
     }
+    portriatContentLength = 0;
+    landscapeContentLength = 0;
 
 }
 
